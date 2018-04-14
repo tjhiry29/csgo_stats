@@ -1,0 +1,47 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :map_name, class: "control-label" %>
+    <%= text_input f, :map_name, class: "form-control" %>
+    <%= error_tag f, :map_name %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :tick_rate, class: "control-label" %>
+    <%= number_input f, :tick_rate, class: "form-control" %>
+    <%= error_tag f, :tick_rate %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :team1_score, class: "control-label" %>
+    <%= number_input f, :team1_score, class: "form-control" %>
+    <%= error_tag f, :team1_score %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :team2_score, class: "control-label" %>
+    <%= number_input f, :team2_score, class: "form-control" %>
+    <%= error_tag f, :team2_score %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :rounds_played, class: "control-label" %>
+    <%= number_input f, :rounds_played, class: "form-control" %>
+    <%= error_tag f, :rounds_played %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :demo_name, class: "control-label" %>
+    <%= text_input f, :demo_name, class: "form-control" %>
+    <%= error_tag f, :demo_name %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

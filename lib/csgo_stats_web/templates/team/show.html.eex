@@ -1,0 +1,43 @@
+<h2>Show Team</h2>
+
+<ul>
+
+  <li>
+    <strong>Teamnum:</strong>
+    <%= @team.teamnum %>
+  </li>
+
+  <li>
+    <strong>Round win ids:</strong>
+    <%= @team.round_win_ids %>
+  </li>
+
+  <li>
+    <strong>Round loss ids:</strong>
+    <%= @team.round_loss_ids %>
+  </li>
+
+  <li>
+    <strong>Bomb plant ids:</strong>
+    <%= @team.bomb_plant_ids %>
+  </li>
+
+  <li>
+    <strong>Bomb defusal ids:</strong>
+    <%= @team.bomb_defusal_ids %>
+  </li>
+
+  <li>
+    <strong>Rounds won:</strong>
+    <%= @team.rounds_won %>
+  </li>
+
+  <li>
+    <strong>Rounds lost:</strong>
+    <%= @team.rounds_lost %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: team_path(@conn, :edit, @team) %></span>
+<span><%= link "Back", to: team_path(@conn, :index) %></span>

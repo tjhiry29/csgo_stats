@@ -1,0 +1,101 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= label f, :name, class: "control-label" %>
+    <%= text_input f, :name, class: "form-control" %>
+    <%= error_tag f, :name %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :userid, class: "control-label" %>
+    <%= number_input f, :userid, class: "form-control" %>
+    <%= error_tag f, :userid %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :xuid, class: "control-label" %>
+    <%= number_input f, :xuid, class: "form-control" %>
+    <%= error_tag f, :xuid %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :adr, class: "control-label" %>
+    <%= number_input f, :adr, step: "any", class: "form-control" %>
+    <%= error_tag f, :adr %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :kast, class: "control-label" %>
+    <%= number_input f, :kast, step: "any", class: "form-control" %>
+    <%= error_tag f, :kast %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :teamnum, class: "control-label" %>
+    <%= number_input f, :teamnum, class: "form-control" %>
+    <%= error_tag f, :teamnum %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :rounds_played, class: "control-label" %>
+    <%= number_input f, :rounds_played, class: "form-control" %>
+    <%= error_tag f, :rounds_played %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :kill_count, class: "control-label" %>
+    <%= number_input f, :kill_count, class: "form-control" %>
+    <%= error_tag f, :kill_count %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :assist_count, class: "control-label" %>
+    <%= number_input f, :assist_count, class: "form-control" %>
+    <%= error_tag f, :assist_count %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :death_count, class: "control-label" %>
+    <%= number_input f, :death_count, class: "form-control" %>
+    <%= error_tag f, :death_count %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :headshot_count, class: "control-label" %>
+    <%= number_input f, :headshot_count, class: "form-control" %>
+    <%= error_tag f, :headshot_count %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :first_kills, class: "control-label" %>
+    <%= number_input f, :first_kills, class: "form-control" %>
+    <%= error_tag f, :first_kills %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :first_deaths, class: "control-label" %>
+    <%= number_input f, :first_deaths, class: "form-control" %>
+    <%= error_tag f, :first_deaths %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :trade_kills, class: "control-label" %>
+    <%= number_input f, :trade_kills, class: "form-control" %>
+    <%= error_tag f, :trade_kills %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :deaths_traded, class: "control-label" %>
+    <%= number_input f, :deaths_traded, class: "form-control" %>
+    <%= error_tag f, :deaths_traded %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-primary" %>
+  </div>
+<% end %>

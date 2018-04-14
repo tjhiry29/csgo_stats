@@ -1,0 +1,83 @@
+<h2>Show Player</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @player.name %>
+  </li>
+
+  <li>
+    <strong>Userid:</strong>
+    <%= @player.userid %>
+  </li>
+
+  <li>
+    <strong>Xuid:</strong>
+    <%= @player.xuid %>
+  </li>
+
+  <li>
+    <strong>Adr:</strong>
+    <%= @player.adr %>
+  </li>
+
+  <li>
+    <strong>Kast:</strong>
+    <%= @player.kast %>
+  </li>
+
+  <li>
+    <strong>Teamnum:</strong>
+    <%= @player.teamnum %>
+  </li>
+
+  <li>
+    <strong>Rounds played:</strong>
+    <%= @player.rounds_played %>
+  </li>
+
+  <li>
+    <strong>Kill count:</strong>
+    <%= @player.kill_count %>
+  </li>
+
+  <li>
+    <strong>Assist count:</strong>
+    <%= @player.assist_count %>
+  </li>
+
+  <li>
+    <strong>Death count:</strong>
+    <%= @player.death_count %>
+  </li>
+
+  <li>
+    <strong>Headshot count:</strong>
+    <%= @player.headshot_count %>
+  </li>
+
+  <li>
+    <strong>First kills:</strong>
+    <%= @player.first_kills %>
+  </li>
+
+  <li>
+    <strong>First deaths:</strong>
+    <%= @player.first_deaths %>
+  </li>
+
+  <li>
+    <strong>Trade kills:</strong>
+    <%= @player.trade_kills %>
+  </li>
+
+  <li>
+    <strong>Deaths traded:</strong>
+    <%= @player.deaths_traded %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: player_path(@conn, :edit, @player) %></span>
+<span><%= link "Back", to: player_path(@conn, :index) %></span>

@@ -1,0 +1,38 @@
+<h2>Show Game</h2>
+
+<ul>
+
+  <li>
+    <strong>Map name:</strong>
+    <%= @game.map_name %>
+  </li>
+
+  <li>
+    <strong>Tick rate:</strong>
+    <%= @game.tick_rate %>
+  </li>
+
+  <li>
+    <strong>Team1 score:</strong>
+    <%= @game.team1_score %>
+  </li>
+
+  <li>
+    <strong>Team2 score:</strong>
+    <%= @game.team2_score %>
+  </li>
+
+  <li>
+    <strong>Rounds played:</strong>
+    <%= @game.rounds_played %>
+  </li>
+
+  <li>
+    <strong>Demo name:</strong>
+    <%= @game.demo_name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: game_path(@conn, :edit, @game) %></span>
+<span><%= link "Back", to: game_path(@conn, :index) %></span>
