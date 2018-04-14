@@ -58,7 +58,7 @@ config :phoenix, :stacktrace_depth, 20
 config :csgo_stats, CsgoStats.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "ryan",
+  password: "abc123",
   database: "csgo_stats_dev",
   hostname: "localhost",
   pool_size: 10
