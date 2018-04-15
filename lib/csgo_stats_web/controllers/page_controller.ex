@@ -60,33 +60,23 @@ defmodule CsgoStatsWeb.PageController do
         assists = Enum.flat_map(players, fn player -> player.assists end)
         kills = Enum.flat_map(players, fn player -> player.kills end)
 
-        smokegrenade_throws =
+        get_grenade_throws = fn players, filter_method ->
           Enum.flat_map(players, fn player ->
-            Enum.filter(player.grenade_throws, fn g ->
-              DemoInfoGo.SmokegrenadeThrow.is_smokegrenade_throw(g)
-            end)
+            Enum.filter(player.grenade_throws, &filter_method.(&1))
           end)
+        end
+
+        smokegrenade_throws =
+          get_grenade_throws.(players, &DemoInfoGo.SmokegrenadeThrow.is_smokegrenade_throw(&1))
 
         hegrenade_throws =
-          Enum.flat_map(players, fn player ->
-            Enum.filter(player.grenade_throws, fn g ->
-              DemoInfoGo.HegrenadeThrow.is_hegrenade_throw(g)
-            end)
-          end)
+          get_grenade_throws.(players, &DemoInfoGo.HegrenadeThrow.is_hegrenade_throw(&1))
 
         flashbang_throws =
-          Enum.flat_map(players, fn player ->
-            Enum.filter(player.grenade_throws, fn g ->
-              DemoInfoGo.FlashbangThrow.is_flashbang_throw(g)
-            end)
-          end)
+          get_grenade_throws.(players, &DemoInfoGo.FlashbangThrow.is_flashbang_throw(&1))
 
         molotov_throws =
-          Enum.flat_map(players, fn player ->
-            Enum.filter(player.grenade_throws, fn g ->
-              DemoInfoGo.MolotovThrow.is_molotov_throw(g)
-            end)
-          end)
+          get_grenade_throws.(players, &DemoInfoGo.MolotovThrow.is_molotov_throw(&1))
 
         game_players = Enum.map(first_players ++ second_players, fn {:ok, player} -> player end)
 
