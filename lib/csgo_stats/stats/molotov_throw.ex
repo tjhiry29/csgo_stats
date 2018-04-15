@@ -1,6 +1,7 @@
 defmodule CsgoStats.Stats.MolotovThrow do
   use Ecto.Schema
   import Ecto.Changeset
+  alias CsgoStats.Stats.{Game, Player, MolotovThrow}
 
   schema "molotov_throws" do
     field(:facing, :string)
@@ -14,10 +15,23 @@ defmodule CsgoStats.Stats.MolotovThrow do
     field(:time_elapsed, :float)
     field(:time_left_in_round, :float)
     field(:total_damage_dealt, :float)
-    field(:game_id, :id)
-    field(:player_id, :id)
+    belongs_to(:game, Game)
+    belongs_to(:player, Player)
 
     timestamps()
+  end
+
+  def create_molotov_throw(molotov_throw, players, game) do
+    player = Enum.find(players, fn player -> player.name == molotov_throw.player_name end)
+
+    attrs =
+      molotov_throw
+      |> Map.from_struct()
+      |> Map.put(:player_userid, molotov_throw.player_id)
+
+    changeset(%MolotovThrow{}, attrs)
+    |> put_assoc(:player, player)
+    |> put_assoc(:game, game)
   end
 
   @doc false

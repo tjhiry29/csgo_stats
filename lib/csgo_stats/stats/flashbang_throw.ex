@@ -1,6 +1,7 @@
-defmodule CsgoStats.Stats.FlashbangThrows do
+defmodule CsgoStats.Stats.FlashbangThrow do
   use Ecto.Schema
   import Ecto.Changeset
+  alias CsgoStats.Stats.{Game, Player, FlashbangThrow}
 
   schema "flashbang_throws" do
     field(:facing, :string)
@@ -15,10 +16,23 @@ defmodule CsgoStats.Stats.FlashbangThrows do
     field(:time_elapsed, :float)
     field(:time_left_in_round, :float)
     field(:total_blind_duration, :float)
-    field(:game_id, :id)
-    field(:player_id, :id)
+    belongs_to(:game, Game)
+    belongs_to(:player, Player)
 
     timestamps()
+  end
+
+  def create_flashbang_throw(flashbang_throw, players, game) do
+    player = Enum.find(players, fn player -> player.name == flashbang_throw.player_name end)
+
+    attrs =
+      flashbang_throw
+      |> Map.from_struct()
+      |> Map.put(:player_userid, flashbang_throw.player_id)
+
+    changeset(%FlashbangThrow{}, attrs)
+    |> put_assoc(:player, player)
+    |> put_assoc(:game, game)
   end
 
   @doc false

@@ -363,4 +363,48 @@ defmodule CsgoStats.Stats do
       end)
     end)
   end
+
+  alias CsgoStats.Stats.SmokegrenadeThrow
+
+  def create_smokegrenade_throws(smokegrenade_throws, players, game) do
+    Repo.transaction(fn ->
+      Enum.map(smokegrenade_throws, fn smokegrenade_throw ->
+        SmokegrenadeThrow.create_smokegrenade_throw(smokegrenade_throw, players, game)
+        |> Repo.insert()
+      end)
+    end)
+  end
+
+  alias CsgoStats.Stats.HegrenadeThrow
+
+  def create_hegrenade_throws(hegrenade_throws, players, game) do
+    Repo.transaction(fn ->
+      Enum.map(hegrenade_throws, fn hegrenade_throw ->
+        HegrenadeThrow.create_hegrenade_throw(hegrenade_throw, players, game)
+        |> Repo.insert()
+      end)
+    end)
+  end
+
+  alias CsgoStats.Stats.MolotovThrow
+
+  def create_molotov_throws(molotov_throws, players, game) do
+    Repo.transaction(fn ->
+      Enum.map(molotov_throws, fn molotov_throw ->
+        MolotovThrow.create_molotov_throw(molotov_throw, players, game)
+        |> Repo.insert()
+      end)
+    end)
+  end
+
+  alias CsgoStats.Stats.FlashbangThrow
+
+  def create_flashbang_throws(flashbang_throws, players, game) do
+    Repo.transaction(fn ->
+      Enum.map(flashbang_throws, fn flashbang_throw ->
+        FlashbangThrow.create_flashbang_throw(flashbang_throw, players, game)
+        |> Repo.insert()
+      end)
+    end)
+  end
 end
