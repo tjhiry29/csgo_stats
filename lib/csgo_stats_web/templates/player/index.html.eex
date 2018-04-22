@@ -4,20 +4,9 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Userid</th>
       <th>Xuid</th>
-      <th>Adr</th>
-      <th>Kast</th>
-      <th>Teamnum</th>
-      <th>Rounds played</th>
-      <th>Kill count</th>
-      <th>Assist count</th>
-      <th>Death count</th>
-      <th>Headshot count</th>
-      <th>First kills</th>
-      <th>First deaths</th>
-      <th>Trade kills</th>
-      <th>Deaths traded</th>
+      <th>Friends ID</th>
+      
 
       <th></th>
     </tr>
@@ -26,20 +15,8 @@
 <%= for player <- @players do %>
     <tr>
       <td><%= player.name %></td>
-      <td><%= player.userid %></td>
       <td><%= player.xuid %></td>
-      <td><%= player.adr %></td>
-      <td><%= player.kast %></td>
-      <td><%= player.teamnum %></td>
-      <td><%= player.rounds_played %></td>
-      <td><%= player.kill_count %></td>
-      <td><%= player.assist_count %></td>
-      <td><%= player.death_count %></td>
-      <td><%= player.headshot_count %></td>
-      <td><%= player.first_kills %></td>
-      <td><%= player.first_deaths %></td>
-      <td><%= player.trade_kills %></td>
-      <td><%= player.deaths_traded %></td>
+      <td><%= player.friends_id %></td>
 
       <td class="text-right">
         <span><%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %></span>

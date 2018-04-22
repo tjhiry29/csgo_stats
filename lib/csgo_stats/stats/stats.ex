@@ -39,6 +39,11 @@ defmodule CsgoStats.Stats do
 
   def get_game_by_demo_name(demo_name), do: Repo.get_by(Game, demo_name: demo_name)
 
+  def get_game_player_records(game) do
+    game
+    |> Repo.preload(:player_game_records)
+  end
+
   @doc """
   Creates a game.
 
@@ -212,7 +217,7 @@ defmodule CsgoStats.Stats do
     Team.changeset(team, %{})
   end
 
-  alias CsgoStats.Stats.Player
+  alias CsgoStats.Stats.{Player, PlayerGameRecord}
 
   @doc """
   Returns the list of players.
@@ -225,6 +230,15 @@ defmodule CsgoStats.Stats do
   """
   def list_players do
     Repo.all(Player)
+  end
+
+  def get_player_game_records(player) do
+    player = player |> Repo.preload(:player_game_records)
+
+    player_game_records =
+      Enum.map(player.player_game_records, fn game_record -> Repo.preload(game_record, :game) end)
+
+    %{player | player_game_records: player_game_records}
   end
 
   @doc """
@@ -261,23 +275,32 @@ defmodule CsgoStats.Stats do
     |> Repo.insert()
   end
 
+  def create_or_get_player(player = %DemoInfoGo.Player{}) do
+    new_player = Player.create_player(player)
+
+    case Repo.get_by(Player, xuid: Map.get(player, :xuid)) do
+      {:ok, existing} ->
+        {:ok, existing}
+
+      _ ->
+        Repo.insert(new_player)
+    end
+  end
+
   def create_players_from_team(players, game, team, player_infos) do
     players =
       players
-      |> Enum.map(fn player -> Player.normalize_player(player, player_infos) end)
+      |> Enum.map(&Player.normalize_player(&1, player_infos))
       |> Player.filter_bots()
 
     Repo.transaction(fn ->
       Enum.map(players, fn player ->
-        create_player(player, game, team)
+        {:ok, new_player} = create_or_get_player(player)
+
+        PlayerGameRecord.create_player(player, game, team, new_player)
+        |> Repo.insert()
       end)
     end)
-  end
-
-  def create_player(player, game, team) do
-    %Player{}
-    |> Player.create_player(player, game, team)
-    |> Repo.insert()
   end
 
   @doc """

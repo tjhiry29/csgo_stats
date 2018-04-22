@@ -8,74 +8,49 @@
   </li>
 
   <li>
-    <strong>Userid:</strong>
-    <%= @player.userid %>
-  </li>
-
-  <li>
     <strong>Xuid:</strong>
     <%= @player.xuid %>
   </li>
 
-  <li>
-    <strong>Adr:</strong>
-    <%= @player.adr %>
-  </li>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Kills</th>
+      <th>Assists</th>
+      <th>Deaths</th>
+      <th>First Kills</th>
+      <th>First Deaths</th>
+      <th>Headshots</th>
+      <th>Trade Kills</th>
+      <th>ADR</th>
+      <th>KAST</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for player <- @player.player_game_records do %>
+    <tr>
+      <td><%= player.name %></td>
+      <td><%= player.kill_count %></td>
+      <td><%= player.assist_count %></td>
+      <td><%= player.death_count %></td>
+      <td><%= player.first_kills %></td>
+      <td><%= player.first_deaths %></td>
+      <td><%= player.headshot_count %></td>
+      <td><%= player.trade_kills %></td>
+      <td><%= player.adr %></td>
+      <td><%= player.kast %></td>
+      <td><%= player.game.map_name %></td>
 
-  <li>
-    <strong>Kast:</strong>
-    <%= @player.kast %>
-  </li>
-
-  <li>
-    <strong>Teamnum:</strong>
-    <%= @player.teamnum %>
-  </li>
-
-  <li>
-    <strong>Rounds played:</strong>
-    <%= @player.rounds_played %>
-  </li>
-
-  <li>
-    <strong>Kill count:</strong>
-    <%= @player.kill_count %>
-  </li>
-
-  <li>
-    <strong>Assist count:</strong>
-    <%= @player.assist_count %>
-  </li>
-
-  <li>
-    <strong>Death count:</strong>
-    <%= @player.death_count %>
-  </li>
-
-  <li>
-    <strong>Headshot count:</strong>
-    <%= @player.headshot_count %>
-  </li>
-
-  <li>
-    <strong>First kills:</strong>
-    <%= @player.first_kills %>
-  </li>
-
-  <li>
-    <strong>First deaths:</strong>
-    <%= @player.first_deaths %>
-  </li>
-
-  <li>
-    <strong>Trade kills:</strong>
-    <%= @player.trade_kills %>
-  </li>
-
-  <li>
-    <strong>Deaths traded:</strong>
-    <%= @player.deaths_traded %>
-  </li>
+      <td class="text-right">
+        <span><%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Edit", to: player_path(@conn, :edit, player), class: "btn btn-default btn-xs" %></span>
+        <span><%= link "Delete", to: player_path(@conn, :delete, player), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
 
 </ul>
 

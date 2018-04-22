@@ -16,12 +16,12 @@ defmodule CsgoStats.Repo.Migrations.CreateFlashbangThrows do
       add(:total_blind_duration, :float)
       add(:flash_assist, :boolean, default: false, null: false)
       add(:game_id, references(:games, on_delete: :nothing))
-      add(:player_id, references(:players, on_delete: :nothing))
+      add(:player_game_record_id, references(:player_game_records, on_delete: :nothing))
 
       timestamps()
     end
 
     create(index(:flashbang_throws, [:game_id]))
-    create(index(:flashbang_throws, [:player_id]))
+    create(index(:flashbang_throws, [:player_game_record_id]))
   end
 end

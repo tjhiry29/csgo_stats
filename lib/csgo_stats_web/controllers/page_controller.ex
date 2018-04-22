@@ -57,7 +57,6 @@ defmodule CsgoStatsWeb.PageController do
           Stats.create_players_from_team(second_team.players, game, team2, player_infos)
 
         players = first_team.players ++ second_team.players
-        assists = Enum.flat_map(players, fn player -> player.assists end)
         kills = Enum.flat_map(players, fn player -> player.kills end)
 
         get_grenade_throws = fn players, filter_method ->

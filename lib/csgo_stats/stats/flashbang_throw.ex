@@ -1,7 +1,7 @@
 defmodule CsgoStats.Stats.FlashbangThrow do
   use Ecto.Schema
   import Ecto.Changeset
-  alias CsgoStats.Stats.{Game, Player, FlashbangThrow}
+  alias CsgoStats.Stats.{Game, PlayerGameRecord, FlashbangThrow}
 
   schema "flashbang_throws" do
     field(:facing, :string)
@@ -17,7 +17,7 @@ defmodule CsgoStats.Stats.FlashbangThrow do
     field(:time_left_in_round, :float)
     field(:total_blind_duration, :float)
     belongs_to(:game, Game)
-    belongs_to(:player, Player)
+    belongs_to(:player_game_record, PlayerGameRecord)
 
     timestamps()
   end
@@ -31,7 +31,7 @@ defmodule CsgoStats.Stats.FlashbangThrow do
       |> Map.put(:player_userid, flashbang_throw.player_id)
 
     changeset(%FlashbangThrow{}, attrs)
-    |> put_assoc(:player, player)
+    |> put_assoc(:player_game_record, player)
     |> put_assoc(:game, game)
   end
 

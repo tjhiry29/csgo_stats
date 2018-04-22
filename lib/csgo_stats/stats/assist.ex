@@ -1,7 +1,7 @@
 defmodule CsgoStats.Stats.Assist do
   use Ecto.Schema
   import Ecto.Changeset
-  alias CsgoStats.Stats.{Game, Player, Kill, Assist}
+  alias CsgoStats.Stats.{Game, PlayerGameRecord, Kill, Assist}
 
   schema "assists" do
     field(:assister_name, :string)
@@ -12,8 +12,8 @@ defmodule CsgoStats.Stats.Assist do
     field(:time_left_in_round, :float)
     field(:victim_name, :string)
     field(:victim_userid, :integer)
-    belongs_to(:victim, Player)
-    belongs_to(:assister, Player)
+    belongs_to(:victim, PlayerGameRecord)
+    belongs_to(:assister, PlayerGameRecord)
     belongs_to(:game, Game)
     has_one(:kill, Kill)
 

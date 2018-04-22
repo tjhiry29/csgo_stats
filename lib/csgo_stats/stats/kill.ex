@@ -1,7 +1,7 @@
 defmodule CsgoStats.Stats.Kill do
   use Ecto.Schema
   import Ecto.Changeset
-  alias CsgoStats.Stats.{Game, Player, Assist, Kill}
+  alias CsgoStats.Stats.{Game, PlayerGameRecord, Assist, Kill}
 
   schema "kills" do
     field(:attacker_name, :string)
@@ -21,8 +21,8 @@ defmodule CsgoStats.Stats.Kill do
     field(:weapon, :string)
     belongs_to(:assist, Assist)
     belongs_to(:game, Game)
-    belongs_to(:attacker, Player)
-    belongs_to(:victim, Player)
+    belongs_to(:attacker, PlayerGameRecord)
+    belongs_to(:victim, PlayerGameRecord)
 
     timestamps()
   end

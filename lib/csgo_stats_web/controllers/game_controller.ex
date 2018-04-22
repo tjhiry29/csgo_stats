@@ -27,7 +27,9 @@ defmodule CsgoStatsWeb.GameController do
   end
 
   def show(conn, %{"id" => id}) do
-    game = Stats.get_game!(id)
+    game =
+      Stats.get_game!(id)
+      |> Stats.get_game_player_records()
 
     render(conn, "show.html", game: game)
   end

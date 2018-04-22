@@ -20,13 +20,17 @@ defmodule CsgoStatsWeb.PlayerController do
         conn
         |> put_flash(:info, "Player created successfully.")
         |> redirect(to: player_path(conn, :show, player))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    player = Stats.get_player!(id)
+    player =
+      Stats.get_player!(id)
+      |> Stats.get_player_game_records()
+
     render(conn, "show.html", player: player)
   end
 
@@ -44,6 +48,7 @@ defmodule CsgoStatsWeb.PlayerController do
         conn
         |> put_flash(:info, "Player updated successfully.")
         |> redirect(to: player_path(conn, :show, player))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", player: player, changeset: changeset)
     end

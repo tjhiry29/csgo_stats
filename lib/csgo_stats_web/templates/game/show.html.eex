@@ -32,6 +32,39 @@
     <%= @game.demo_name %>
   </li>
 
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Kills</th>
+      <th>Assists</th>
+      <th>Deaths</th>
+      <th>First Kills</th>
+      <th>First Deaths</th>
+      <th>Headshots</th>
+      <th>Trade Kills</th>
+      <th>ADR</th>
+      <th>KAST</th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for player <- @game.player_game_records do %>
+    <tr>
+      <td><%= player.name %></td>
+      <td><%= player.kill_count %></td>
+      <td><%= player.assist_count %></td>
+      <td><%= player.death_count %></td>
+      <td><%= player.first_kills %></td>
+      <td><%= player.first_deaths %></td>
+      <td><%= player.headshot_count %></td>
+      <td><%= player.trade_kills %></td>
+      <td><%= player.adr %></td>
+      <td><%= player.kast %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
 </ul>
 
 <span><%= link "Edit", to: game_path(@conn, :edit, @game) %></span>

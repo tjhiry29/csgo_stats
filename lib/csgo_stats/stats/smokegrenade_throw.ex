@@ -1,7 +1,7 @@
 defmodule CsgoStats.Stats.SmokegrenadeThrow do
   use Ecto.Schema
   import Ecto.Changeset
-  alias CsgoStats.Stats.{Game, Player, SmokegrenadeThrow}
+  alias CsgoStats.Stats.{Game, PlayerGameRecord, SmokegrenadeThrow}
 
   schema "smokegrenade_throws" do
     field(:origin, {:array, :float})
@@ -12,7 +12,7 @@ defmodule CsgoStats.Stats.SmokegrenadeThrow do
     field(:time_elapsed, :float)
     field(:time_left_in_round, :float)
     belongs_to(:game, Game)
-    belongs_to(:player, Player)
+    belongs_to(:player_game_record, PlayerGameRecord)
 
     timestamps()
   end
@@ -26,7 +26,7 @@ defmodule CsgoStats.Stats.SmokegrenadeThrow do
       |> Map.put(:player_userid, smokegrenade_throw.player_id)
 
     changeset(%SmokegrenadeThrow{}, attrs)
-    |> put_assoc(:player, player)
+    |> put_assoc(:player_game_record, player)
     |> put_assoc(:game, game)
   end
 

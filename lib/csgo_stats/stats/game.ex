@@ -1,7 +1,7 @@
 defmodule CsgoStats.Stats.Game do
   use Ecto.Schema
   import Ecto.Changeset
-  alias CsgoStats.Stats.{Team, Player, Kill, GameEvent, Assist}
+  alias CsgoStats.Stats.{Team, PlayerGameRecord, Kill, GameEvent, Assist}
 
   @derive {Poison.Encoder,
            only: [
@@ -24,7 +24,7 @@ defmodule CsgoStats.Stats.Game do
     has_many(:game_events, GameEvent)
     has_many(:kills, Kill)
     has_many(:teams, Team)
-    has_many(:players, Player)
+    has_many(:player_game_records, PlayerGameRecord)
 
     timestamps()
   end

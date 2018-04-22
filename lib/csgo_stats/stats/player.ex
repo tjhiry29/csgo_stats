@@ -1,35 +1,18 @@
 defmodule CsgoStats.Stats.Player do
-  alias CsgoStats.Stats.{Game, Team, Player, Kill}
+  alias CsgoStats.Stats.{Player, PlayerGameRecord}
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "players" do
-    field(:adr, :float)
-    field(:assist_count, :integer)
-    field(:death_count, :integer)
-    field(:deaths_traded, :integer)
-    field(:first_deaths, :integer)
-    field(:first_kills, :integer)
-    field(:headshot_count, :integer)
-    field(:kast, :float)
-    field(:kill_count, :integer)
     field(:name, :string)
-    field(:rounds_played, :integer)
-    field(:teamnum, :integer)
-    field(:trade_kills, :integer)
-    field(:userid, :integer)
-    field(:xuid, :string)
-    belongs_to(:game, Game)
-    belongs_to(:team, Team)
-    has_many(:kills, Kill, foreign_key: :attacker_id)
-    has_many(:deaths, Kill, foreign_key: :victim_id)
+    field(:xuid, :integer)
+    field(:friends_id, :integer)
 
+    has_many(:player_game_records, PlayerGameRecord)
     timestamps()
   end
 
   def normalize_player(player = %DemoInfoGo.Player{}, player_infos) do
-    IO.inspect(player_infos)
-
     infos =
       Enum.filter(player_infos, fn info ->
         info.fields |> Map.get("userID") |> String.to_integer() == player.id
@@ -42,8 +25,10 @@ defmodule CsgoStats.Stats.Player do
       true ->
         info = Enum.at(infos, 0)
 
-        Map.put(player, :xuid, Map.get(info.fields, "xuid"))
+        player
+        |> Map.put(:xuid, Map.get(info.fields, "xuid") |> String.to_integer())
         |> Map.put(:fakeplayer, Map.get(info.fields, "fakeplayer"))
+        |> Map.put(:friends_id, Map.get(info.fields, "friendsID") |> String.to_integer())
     end
   end
 
@@ -51,22 +36,12 @@ defmodule CsgoStats.Stats.Player do
     Enum.filter(players, fn player -> player.fakeplayer == "0" end)
   end
 
-  def create_player(
-        struct,
-        player = %DemoInfoGo.Player{},
-        game = %Game{},
-        team = %Team{}
-      ) do
+  def create_player(player = %DemoInfoGo.Player{}) do
     attrs =
       player
       |> Map.from_struct()
-      |> Map.put(:userid, player.id)
-      |> Map.put(:team, team)
-      |> Map.put(:game, game)
 
-    changeset(struct, attrs)
-    |> put_assoc(:game, attrs.game)
-    |> put_assoc(:team, attrs.team)
+    changeset(%Player{}, attrs)
   end
 
   @doc false
@@ -74,37 +49,13 @@ defmodule CsgoStats.Stats.Player do
     player
     |> cast(attrs, [
       :name,
-      :userid,
       :xuid,
-      :adr,
-      :kast,
-      :teamnum,
-      :rounds_played,
-      :kill_count,
-      :assist_count,
-      :death_count,
-      :headshot_count,
-      :first_kills,
-      :first_deaths,
-      :trade_kills,
-      :deaths_traded
+      :friends_id
     ])
     |> validate_required([
       :name,
-      :userid,
       :xuid,
-      :adr,
-      :kast,
-      :teamnum,
-      :rounds_played,
-      :kill_count,
-      :assist_count,
-      :death_count,
-      :headshot_count,
-      :first_kills,
-      :first_deaths,
-      :trade_kills,
-      :deaths_traded
+      :friends_id
     ])
   end
 end
