@@ -11,8 +11,10 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     field(:first_deaths, :integer)
     field(:first_kills, :integer)
     field(:headshot_count, :integer)
+    field(:headshot_percentage, :float)
     field(:kast, :float)
     field(:kill_count, :integer)
+    field(:kill_death_ratio, :float)
     field(:name, :string)
     field(:rounds_played, :integer)
     field(:teamnum, :integer)
@@ -46,6 +48,11 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
         |> Map.put(:xuid, Map.get(info.fields, "xuid") |> String.to_integer())
         |> Map.put(:fakeplayer, Map.get(info.fields, "fakeplayer"))
         |> Map.put(:friends_id, Map.get(info.fields, "friendsID") |> String.to_integer())
+        |> Map.put(
+          :headshot_percentage,
+          headshot_percentage(player.headshot_count, player.kill_count)
+        )
+        |> Map.put(:kill_death_ratio, kill_death_ratio(player.kill_count, player.death_count))
     end
   end
 
@@ -77,6 +84,8 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :first_deaths,
       :first_kills,
       :headshot_count,
+      :headshot_percentage,
+      :kill_death_ratio,
       :kast,
       :kill_count,
       :name,
@@ -94,6 +103,8 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :first_deaths,
       :first_kills,
       :headshot_count,
+      :headshot_percentage,
+      :kill_death_ratio,
       :kast,
       :kill_count,
       :name,
@@ -103,5 +114,13 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :userid,
       :xuid
     ])
+  end
+
+  def headshot_percentage(headshot_count, kill_count) do
+    Float.round(headshot_count / kill_count * 100, 2)
+  end
+
+  def kill_death_ratio(kill_count, death_count) do
+    Float.round(kill_count / death_count, 2)
   end
 end

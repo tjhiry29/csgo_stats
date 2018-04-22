@@ -31,7 +31,12 @@ defmodule CsgoStatsWeb.GameController do
       Stats.get_game!(id)
       |> Stats.get_game_player_records()
 
-    render(conn, "show.html", game: game)
+    players_by_team =
+      game.player_game_records
+      |> Enum.sort_by(fn p -> p.kill_count end, &>=/2)
+      |> Enum.group_by(fn p -> p.teamnum end)
+
+    render(conn, "show.html", game: game, players_by_team: players_by_team)
   end
 
   def edit(conn, %{"id" => id}) do

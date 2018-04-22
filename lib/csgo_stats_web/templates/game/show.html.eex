@@ -39,29 +39,36 @@
       <th>Kills</th>
       <th>Assists</th>
       <th>Deaths</th>
+      <th>KDR</th>
       <th>First Kills</th>
       <th>First Deaths</th>
       <th>Headshots</th>
+      <th>Headshot%</th>
       <th>Trade Kills</th>
       <th>ADR</th>
       <th>KAST</th>
     </tr>
   </thead>
   <tbody>
-<%= for player <- @game.player_game_records do %>
-    <tr>
-      <td><%= player.name %></td>
-      <td><%= player.kill_count %></td>
-      <td><%= player.assist_count %></td>
-      <td><%= player.death_count %></td>
-      <td><%= player.first_kills %></td>
-      <td><%= player.first_deaths %></td>
-      <td><%= player.headshot_count %></td>
-      <td><%= player.trade_kills %></td>
-      <td><%= player.adr %></td>
-      <td><%= player.kast %></td>
-    </tr>
-<% end %>
+    <%= for {teamnum, players} <- @players_by_team do %>
+      <%= for player <- players do %>
+        <tr>
+          <td><%= player.name %></td>
+          <td><%= player.kill_count %></td>
+          <td><%= player.assist_count %></td>
+          <td><%= player.death_count %></td>
+          <td><%= player.kill_death_ratio %></td>
+          <td><%= player.first_kills %></td>
+          <td><%= player.first_deaths %></td>
+          <td><%= player.headshot_count %></td>
+          <td><%= player.headshot_percentage %></td>
+          <td><%= player.trade_kills %></td>
+          <td><%= player.adr %></td>
+          <td><%= player.kast %></td>
+        </tr>
+      <% end %>
+      <tr><td></td></tr>
+    <% end %>
   </tbody>
 </table>
 

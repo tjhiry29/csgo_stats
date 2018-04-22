@@ -19,6 +19,7 @@
       <th>Kills</th>
       <th>Assists</th>
       <th>Deaths</th>
+      <th>KDR</th>
       <th>First Kills</th>
       <th>First Deaths</th>
       <th>Headshots</th>
@@ -34,13 +35,14 @@
       <td><%= player.kill_count %></td>
       <td><%= player.assist_count %></td>
       <td><%= player.death_count %></td>
+      <td><%= player.kill_death_ratio %></td>
       <td><%= player.first_kills %></td>
       <td><%= player.first_deaths %></td>
       <td><%= player.headshot_count %></td>
+      <td><%= player.headshot_percentage %></td>
       <td><%= player.trade_kills %></td>
       <td><%= player.adr %></td>
       <td><%= player.kast %></td>
-      <td><%= player.game.map_name %></td>
 
       <td class="text-right">
         <span><%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %></span>

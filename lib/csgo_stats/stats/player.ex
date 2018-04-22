@@ -29,6 +29,14 @@ defmodule CsgoStats.Stats.Player do
         |> Map.put(:xuid, Map.get(info.fields, "xuid") |> String.to_integer())
         |> Map.put(:fakeplayer, Map.get(info.fields, "fakeplayer"))
         |> Map.put(:friends_id, Map.get(info.fields, "friendsID") |> String.to_integer())
+        |> Map.put(
+          :headshot_percentage,
+          PlayerGameRecord.headshot_percentage(player.headshot_count, player.kill_count)
+        )
+        |> Map.put(
+          :kill_death_ratio,
+          PlayerGameRecord.kill_death_ratio(player.kill_count, player.death_count)
+        )
     end
   end
 
