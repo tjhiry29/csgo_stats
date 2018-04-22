@@ -21,9 +21,8 @@ defmodule CsgoStatsWeb.Router do
     get("/parse", PageController, :dump)
     get("/results", PageController, :results)
 
-    resources("/games", GameController)
-    resources("/teams", TeamController)
-    resources("/players", PlayerController)
+    resources("/games", GameController, only: [:index, :show])
+    resources("/players", PlayerController, only: [:index, :show])
   end
 
   # Other scopes may use custom stacks.

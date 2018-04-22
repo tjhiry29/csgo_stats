@@ -1,5 +1,0 @@
-<h2>New Team</h2>
-
-<%= render "form.html", Map.put(assigns, :action, team_path(@conn, :create)) %>
-
-<span><%= link "Back", to: team_path(@conn, :index) %></span>
