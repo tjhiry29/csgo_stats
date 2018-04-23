@@ -23,5 +23,3 @@
 <% end %>
   </tbody>
 </table>
-
-<span><%= link "New Game", to: game_path(@conn, :new) %></span>

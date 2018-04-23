@@ -5,6 +5,7 @@ defmodule CsgoStats.Stats do
 
   import Ecto.Query, warn: false
   alias CsgoStats.Repo
+  require DemoInfoGo
 
   alias CsgoStats.Stats.Game
 
@@ -429,5 +430,58 @@ defmodule CsgoStats.Stats do
         |> Repo.insert()
       end)
     end)
+  end
+
+  @doc """
+    Creates game and associated models from the results of the DemoInfoGo module.
+  """
+  def create_game_from_demo(teams, filename, player_infos) do
+    {:ok, game} = create_game(teams, filename)
+    first_team = Enum.at(teams, 0)
+    second_team = Enum.at(teams, 1)
+
+    game_events = [
+      first_team.round_wins
+      | [first_team.bomb_defusals | [first_team.bomb_plants | first_team.round_losses]]
+    ]
+
+    game_events = [second_team.bomb_defusals | [second_team.bomb_plants | game_events]]
+    game_events = List.flatten(game_events)
+    {:ok, _game_events} = create_game_events(game_events, game)
+    {:ok, team1} = create_team_from_game(game, first_team)
+    {:ok, team2} = create_team_from_game(game, second_team)
+
+    {:ok, first_players} = create_players_from_team(first_team.players, game, team1, player_infos)
+
+    {:ok, second_players} =
+      create_players_from_team(second_team.players, game, team2, player_infos)
+
+    players = first_team.players ++ second_team.players
+    kills = Enum.flat_map(players, fn player -> player.kills end)
+
+    get_grenade_throws = fn players, filter_method ->
+      Enum.flat_map(players, fn player ->
+        Enum.filter(player.grenade_throws, &filter_method.(&1))
+      end)
+    end
+
+    smokegrenade_throws =
+      get_grenade_throws.(players, &DemoInfoGo.SmokegrenadeThrow.is_smokegrenade_throw(&1))
+
+    hegrenade_throws =
+      get_grenade_throws.(players, &DemoInfoGo.HegrenadeThrow.is_hegrenade_throw(&1))
+
+    flashbang_throws =
+      get_grenade_throws.(players, &DemoInfoGo.FlashbangThrow.is_flashbang_throw(&1))
+
+    molotov_throws = get_grenade_throws.(players, &DemoInfoGo.MolotovThrow.is_molotov_throw(&1))
+
+    game_players = Enum.map(first_players ++ second_players, fn {:ok, player} -> player end)
+
+    {:ok, _} = create_kills_and_assists(kills, game_players, game)
+    {:ok, _} = create_smokegrenade_throws(smokegrenade_throws, game_players, game)
+    {:ok, _} = create_hegrenade_throws(hegrenade_throws, game_players, game)
+    {:ok, _} = create_molotov_throws(molotov_throws, game_players, game)
+    {:ok, _} = create_flashbang_throws(flashbang_throws, game_players, game)
   end
 end

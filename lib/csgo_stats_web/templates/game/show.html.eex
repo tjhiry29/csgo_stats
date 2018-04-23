@@ -74,5 +74,4 @@
 
 </ul>
 
-<span><%= link "Edit", to: game_path(@conn, :edit, @game) %></span>
 <span><%= link "Back", to: game_path(@conn, :index) %></span>
