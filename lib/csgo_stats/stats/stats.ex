@@ -116,7 +116,7 @@ defmodule CsgoStats.Stats do
     Game.changeset(game, %{})
   end
 
-  alias CsgoStats.Stats.Team
+  alias CsgoStats.Stats.TeamGameRecord
 
   @doc """
   Returns the list of teams.
@@ -124,28 +124,28 @@ defmodule CsgoStats.Stats do
   ## Examples
 
       iex> list_teams()
-      [%Team{}, ...]
+      [%TeamGameRecord{}, ...]
 
   """
   def list_teams do
-    Repo.all(Team)
+    Repo.all(TeamGameRecord)
   end
 
   @doc """
   Gets a single team.
 
-  Raises `Ecto.NoResultsError` if the Team does not exist.
+  Raises `Ecto.NoResultsError` if the TeamGameRecord does not exist.
 
   ## Examples
 
       iex> get_team!(123)
-      %Team{}
+      %TeamGameRecord{}
 
       iex> get_team!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_team!(id), do: Repo.get!(Team, id)
+  def get_team!(id), do: Repo.get!(TeamGameRecord, id)
 
   @doc """
   Creates a team.
@@ -153,21 +153,21 @@ defmodule CsgoStats.Stats do
   ## Examples
 
       iex> create_team(%{field: value})
-      {:ok, %Team{}}
+      {:ok, %TeamGameRecord{}}
 
       iex> create_team(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
   def create_team(attrs \\ %{}) do
-    %Team{}
-    |> Team.changeset(attrs)
+    %TeamGameRecord{}
+    |> TeamGameRecord.changeset(attrs)
     |> Repo.insert()
   end
 
-  def create_team_from_game(game = %Game{}, team = %DemoInfoGo.Team{}) do
-    %Team{}
-    |> Team.create_team_from_game(game, team)
+  def create_team_game_record(game = %Game{}, team = %DemoInfoGo.Team{}) do
+    %TeamGameRecord{}
+    |> TeamGameRecord.create_team_game_record(game, team)
     |> Repo.insert()
   end
 
@@ -177,31 +177,31 @@ defmodule CsgoStats.Stats do
   ## Examples
 
       iex> update_team(team, %{field: new_value})
-      {:ok, %Team{}}
+      {:ok, %TeamGameRecord{}}
 
       iex> update_team(team, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_team(%Team{} = team, attrs) do
+  def update_team(%TeamGameRecord{} = team, attrs) do
     team
-    |> Team.changeset(attrs)
+    |> TeamGameRecord.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Team.
+  Deletes a TeamGameRecord.
 
   ## Examples
 
       iex> delete_team(team)
-      {:ok, %Team{}}
+      {:ok, %TeamGameRecord{}}
 
       iex> delete_team(team)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_team(%Team{} = team) do
+  def delete_team(%TeamGameRecord{} = team) do
     Repo.delete(team)
   end
 
@@ -211,11 +211,11 @@ defmodule CsgoStats.Stats do
   ## Examples
 
       iex> change_team(team)
-      %Ecto.Changeset{source: %Team{}}
+      %Ecto.Changeset{source: %TeamGameRecord{}}
 
   """
-  def change_team(%Team{} = team) do
-    Team.changeset(team, %{})
+  def change_team(%TeamGameRecord{} = team) do
+    TeamGameRecord.changeset(team, %{})
   end
 
   alias CsgoStats.Stats.{Player, PlayerGameRecord}
@@ -448,8 +448,8 @@ defmodule CsgoStats.Stats do
     game_events = [second_team.bomb_defusals | [second_team.bomb_plants | game_events]]
     game_events = List.flatten(game_events)
     {:ok, _game_events} = create_game_events(game_events, game)
-    {:ok, team1} = create_team_from_game(game, first_team)
-    {:ok, team2} = create_team_from_game(game, second_team)
+    {:ok, team1} = create_team_game_record(game, first_team)
+    {:ok, team2} = create_team_game_record(game, second_team)
 
     {:ok, first_players} = create_players_from_team(first_team.players, game, team1, player_infos)
 

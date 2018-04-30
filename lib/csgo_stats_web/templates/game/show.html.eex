@@ -36,15 +36,15 @@
   <thead>
     <tr>
       <th>Name</th>
-      <th>Kills</th>
-      <th>Assists</th>
-      <th>Deaths</th>
+      <th>K</th>
+      <th>A</th>
+      <th>D</th>
       <th>KDR</th>
-      <th>First Kills</th>
-      <th>First Deaths</th>
-      <th>Headshots</th>
-      <th>Headshot%</th>
-      <th>Trade Kills</th>
+      <th>FK</th>
+      <th>FD</th>
+      <th>HS</th>
+      <th>HS%</th>
+      <th>TK</th>
       <th>ADR</th>
       <th>KAST</th>
     </tr>

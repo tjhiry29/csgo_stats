@@ -6,9 +6,30 @@ defmodule CsgoStats.StatsTest do
   describe "games" do
     alias CsgoStats.Stats.Game
 
-    @valid_attrs %{demo_name: "some demo_name", map_name: "some map_name", rounds_played: 42, team1_score: 42, team2_score: 42, tick_rate: 42}
-    @update_attrs %{demo_name: "some updated demo_name", map_name: "some updated map_name", rounds_played: 43, team1_score: 43, team2_score: 43, tick_rate: 43}
-    @invalid_attrs %{demo_name: nil, map_name: nil, rounds_played: nil, team1_score: nil, team2_score: nil, tick_rate: nil}
+    @valid_attrs %{
+      demo_name: "some demo_name",
+      map_name: "some map_name",
+      rounds_played: 42,
+      team1_score: 42,
+      team2_score: 42,
+      tick_rate: 42
+    }
+    @update_attrs %{
+      demo_name: "some updated demo_name",
+      map_name: "some updated map_name",
+      rounds_played: 43,
+      team1_score: 43,
+      team2_score: 43,
+      tick_rate: 43
+    }
+    @invalid_attrs %{
+      demo_name: nil,
+      map_name: nil,
+      rounds_played: nil,
+      team1_score: nil,
+      team2_score: nil,
+      tick_rate: nil
+    }
 
     def game_fixture(attrs \\ %{}) do
       {:ok, game} =
@@ -74,11 +95,35 @@ defmodule CsgoStats.StatsTest do
   end
 
   describe "teams" do
-    alias CsgoStats.Stats.Team
+    alias CsgoStats.Stats.TeamGameRecord
 
-    @valid_attrs %{bomb_defusal_ids: [], bomb_plant_ids: [], round_loss_ids: [], round_win_ids: [], rounds_lost: 42, rounds_won: 42, teamnum: 42}
-    @update_attrs %{bomb_defusal_ids: [], bomb_plant_ids: [], round_loss_ids: [], round_win_ids: [], rounds_lost: 43, rounds_won: 43, teamnum: 43}
-    @invalid_attrs %{bomb_defusal_ids: nil, bomb_plant_ids: nil, round_loss_ids: nil, round_win_ids: nil, rounds_lost: nil, rounds_won: nil, teamnum: nil}
+    @valid_attrs %{
+      bomb_defusal_ids: [],
+      bomb_plant_ids: [],
+      round_loss_ids: [],
+      round_win_ids: [],
+      rounds_lost: 42,
+      rounds_won: 42,
+      teamnum: 42
+    }
+    @update_attrs %{
+      bomb_defusal_ids: [],
+      bomb_plant_ids: [],
+      round_loss_ids: [],
+      round_win_ids: [],
+      rounds_lost: 43,
+      rounds_won: 43,
+      teamnum: 43
+    }
+    @invalid_attrs %{
+      bomb_defusal_ids: nil,
+      bomb_plant_ids: nil,
+      round_loss_ids: nil,
+      round_win_ids: nil,
+      rounds_lost: nil,
+      rounds_won: nil,
+      teamnum: nil
+    }
 
     def team_fixture(attrs \\ %{}) do
       {:ok, team} =
@@ -100,7 +145,7 @@ defmodule CsgoStats.StatsTest do
     end
 
     test "create_team/1 with valid data creates a team" do
-      assert {:ok, %Team{} = team} = Stats.create_team(@valid_attrs)
+      assert {:ok, %TeamGameRecord{} = team} = Stats.create_team(@valid_attrs)
       assert team.bomb_defusal_ids == []
       assert team.bomb_plant_ids == []
       assert team.round_loss_ids == []
@@ -117,7 +162,7 @@ defmodule CsgoStats.StatsTest do
     test "update_team/2 with valid data updates the team" do
       team = team_fixture()
       assert {:ok, team} = Stats.update_team(team, @update_attrs)
-      assert %Team{} = team
+      assert %TeamGameRecord{} = team
       assert team.bomb_defusal_ids == []
       assert team.bomb_plant_ids == []
       assert team.round_loss_ids == []
@@ -135,7 +180,7 @@ defmodule CsgoStats.StatsTest do
 
     test "delete_team/1 deletes the team" do
       team = team_fixture()
-      assert {:ok, %Team{}} = Stats.delete_team(team)
+      assert {:ok, %TeamGameRecord{}} = Stats.delete_team(team)
       assert_raise Ecto.NoResultsError, fn -> Stats.get_team!(team.id) end
     end
 
@@ -148,9 +193,57 @@ defmodule CsgoStats.StatsTest do
   describe "players" do
     alias CsgoStats.Stats.Player
 
-    @valid_attrs %{adr: 120.5, assist_count: 42, death_count: 42, deaths_traded: 42, first_deaths: 42, first_kills: 42, headshot_count: 42, kast: 120.5, kill_count: 42, name: "some name", rounds_played: 42, teamnum: 42, trade_kills: 42, userid: 42, xuid: 42}
-    @update_attrs %{adr: 456.7, assist_count: 43, death_count: 43, deaths_traded: 43, first_deaths: 43, first_kills: 43, headshot_count: 43, kast: 456.7, kill_count: 43, name: "some updated name", rounds_played: 43, teamnum: 43, trade_kills: 43, userid: 43, xuid: 43}
-    @invalid_attrs %{adr: nil, assist_count: nil, death_count: nil, deaths_traded: nil, first_deaths: nil, first_kills: nil, headshot_count: nil, kast: nil, kill_count: nil, name: nil, rounds_played: nil, teamnum: nil, trade_kills: nil, userid: nil, xuid: nil}
+    @valid_attrs %{
+      adr: 120.5,
+      assist_count: 42,
+      death_count: 42,
+      deaths_traded: 42,
+      first_deaths: 42,
+      first_kills: 42,
+      headshot_count: 42,
+      kast: 120.5,
+      kill_count: 42,
+      name: "some name",
+      rounds_played: 42,
+      teamnum: 42,
+      trade_kills: 42,
+      userid: 42,
+      xuid: 42
+    }
+    @update_attrs %{
+      adr: 456.7,
+      assist_count: 43,
+      death_count: 43,
+      deaths_traded: 43,
+      first_deaths: 43,
+      first_kills: 43,
+      headshot_count: 43,
+      kast: 456.7,
+      kill_count: 43,
+      name: "some updated name",
+      rounds_played: 43,
+      teamnum: 43,
+      trade_kills: 43,
+      userid: 43,
+      xuid: 43
+    }
+    @invalid_attrs %{
+      adr: nil,
+      assist_count: nil,
+      death_count: nil,
+      deaths_traded: nil,
+      first_deaths: nil,
+      first_kills: nil,
+      headshot_count: nil,
+      kast: nil,
+      kill_count: nil,
+      name: nil,
+      rounds_played: nil,
+      teamnum: nil,
+      trade_kills: nil,
+      userid: nil,
+      xuid: nil
+    }
 
     def player_fixture(attrs \\ %{}) do
       {:ok, player} =

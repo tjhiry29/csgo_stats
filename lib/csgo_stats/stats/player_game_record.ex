@@ -1,5 +1,5 @@
 defmodule CsgoStats.Stats.PlayerGameRecord do
-  alias CsgoStats.Stats.{Game, Team, PlayerGameRecord, Kill, Player}
+  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord, Kill, Player}
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -23,7 +23,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     field(:xuid, :integer)
     field(:friends_id, :integer)
     belongs_to(:game, Game)
-    belongs_to(:team, Team)
+    belongs_to(:team_game_record, TeamGameRecord)
     belongs_to(:player, Player)
     has_many(:kills, Kill, foreign_key: :attacker_id)
     has_many(:deaths, Kill, foreign_key: :victim_id)
@@ -59,7 +59,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
   def create_player(
         player = %DemoInfoGo.Player{},
         game = %Game{},
-        team = %Team{},
+        team = %TeamGameRecord{},
         stats_player = %Player{}
       ) do
     attrs =
@@ -69,7 +69,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
 
     changeset(%PlayerGameRecord{}, attrs)
     |> put_assoc(:game, game)
-    |> put_assoc(:team, team)
+    |> put_assoc(:team_game_record, team)
     |> put_assoc(:player, stats_player)
   end
 

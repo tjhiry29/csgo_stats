@@ -1,9 +1,9 @@
-defmodule CsgoStats.Stats.Team do
-  alias CsgoStats.Stats.{Game, Team, PlayerGameRecord}
+defmodule CsgoStats.Stats.TeamGameRecord do
+  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord}
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "teams" do
+  schema "team_game_records" do
     field(:bomb_defusal_ids, {:array, :integer})
     field(:bomb_plant_ids, {:array, :integer})
     field(:round_loss_ids, {:array, :integer})
@@ -17,7 +17,11 @@ defmodule CsgoStats.Stats.Team do
     timestamps()
   end
 
-  def create_team_from_game(struct = %Team{}, game = %Game{}, team = %DemoInfoGo.Team{}) do
+  def create_team_game_record(
+        struct = %TeamGameRecord{},
+        game = %Game{},
+        team = %DemoInfoGo.Team{}
+      ) do
     attrs =
       team
       |> Map.put(:game, game)

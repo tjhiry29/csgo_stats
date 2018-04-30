@@ -2,7 +2,7 @@ defmodule CsgoStats.Repo.Migrations.CreateTeams do
   use Ecto.Migration
 
   def change do
-    create table(:teams) do
+    create table(:team_game_records) do
       add(:teamnum, :integer)
       add(:round_win_ids, {:array, :integer})
       add(:round_loss_ids, {:array, :integer})
@@ -15,6 +15,6 @@ defmodule CsgoStats.Repo.Migrations.CreateTeams do
       timestamps()
     end
 
-    create(index(:teams, [:game_id]))
+    create(index(:team_game_records, [:game_id]))
   end
 end

@@ -22,14 +22,14 @@ defmodule CsgoStats.Repo.Migrations.CreatePlayerGameRecords do
       add(:xuid, :bigint)
       add(:friends_id, :bigint)
       add(:game_id, references(:games, on_delete: :nothing))
-      add(:team_id, references(:teams, on_delete: :nothing))
+      add(:team_game_record_id, references(:team_game_records, on_delete: :nothing))
       add(:player_id, references(:players, on_delete: :nothing))
 
       timestamps()
     end
 
     create(index(:player_game_records, [:game_id]))
-    create(index(:player_game_records, [:team_id]))
+    create(index(:player_game_records, [:team_game_record_id]))
     create(index(:player_game_records, [:xuid]))
   end
 end
