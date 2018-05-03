@@ -10,7 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias CsgoStats.{Repo, Stats}
+alias CsgoStats.Stats
 require DemoInfoGo
 
 for file <- File.ls!("seeds/") do

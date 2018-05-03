@@ -59,7 +59,6 @@ defmodule CsgoStats.Stats.FlashbangThrow do
       :round,
       :origin,
       :facing,
-      :location,
       :time_elapsed,
       :time_left_in_round,
       :player_blind_duration,
