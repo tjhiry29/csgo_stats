@@ -28,8 +28,8 @@ defmodule CsgoStats.Stats.Kill do
   end
 
   def create_kill(kill, players, assist, game) do
-    victim = Enum.find(players, fn player -> player.name == kill.victim_name end)
-    attacker = Enum.find(players, fn player -> player.name == kill.attacker_name end)
+    victim = Enum.find(players, fn player -> player.userid == kill.victim_id end)
+    attacker = Enum.find(players, fn player -> player.userid == kill.attacker_id end)
 
     attrs =
       kill

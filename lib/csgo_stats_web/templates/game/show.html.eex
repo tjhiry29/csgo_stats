@@ -1,77 +1,82 @@
-<h2>Show Game</h2>
+<div class="game-show">
+  <h2>Game</h2>
 
-<ul>
-
-  <li>
-    <strong>Map name:</strong>
-    <%= @game.map_name %>
-  </li>
-
-  <li>
-    <strong>Tick rate:</strong>
-    <%= @game.tick_rate %>
-  </li>
-
-  <li>
-    <strong>Team1 score:</strong>
-    <%= @game.team1_score %>
-  </li>
-
-  <li>
-    <strong>Team2 score:</strong>
-    <%= @game.team2_score %>
-  </li>
-
-  <li>
-    <strong>Rounds played:</strong>
-    <%= @game.rounds_played %>
-  </li>
-
-  <li>
-    <strong>Demo name:</strong>
-    <%= @game.demo_name %>
-  </li>
-
-<table class="table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>K</th>
-      <th>A</th>
-      <th>D</th>
-      <th>KDR</th>
-      <th>FK</th>
-      <th>FD</th>
-      <th>HS</th>
-      <th>HS%</th>
-      <th>TK</th>
-      <th>ADR</th>
-      <th>KAST</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for {teamnum, players} <- @players_by_team do %>
-      <%= for player <- players do %>
-        <tr>
-          <td><%= player.name %></td>
-          <td><%= player.kill_count %></td>
-          <td><%= player.assist_count %></td>
-          <td><%= player.death_count %></td>
-          <td><%= player.kill_death_ratio %></td>
-          <td><%= player.first_kills %></td>
-          <td><%= player.first_deaths %></td>
-          <td><%= player.headshot_count %></td>
-          <td><%= player.headshot_percentage %></td>
-          <td><%= player.trade_kills %></td>
-          <td><%= player.adr %></td>
-          <td><%= player.kast %></td>
-        </tr>
+  <div class="game-info">
+    <span class="bold">Map name:</span> <%= @game.map_name %>
+    <br>
+    <span class="bold">Score:</span> <%= @game.team1_score %> - <%= @game.team2_score %>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <%= for {teamnum, players} <- @players_by_team do %>
+        <thead class="thead-light">
+          <tr>
+            <th>Name</th>
+            <th>K</th>
+            <th>A</th>
+            <th>D</th>
+            <th>KDR</th>
+            <th>FK</th>
+            <th>FD</th>
+            <th>TK</th>
+            <th>HS</th>
+            <th>HS%</th>
+            <th>ADR</th>
+            <th>KAST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for player <- players do %>
+            <tr>
+              <td><%= player.name %></td>
+              <td><%= player.kill_count %></td>
+              <td><%= player.assist_count %></td>
+              <td><%= player.death_count %></td>
+              <td><%= player.kill_death_ratio %></td>
+              <td><%= player.first_kills %></td>
+              <td><%= player.first_deaths %></td>
+              <td><%= player.trade_kills %></td>
+              <td><%= player.headshot_count %></td>
+              <td><%= player.headshot_percentage %>%</td>
+              <td><%= player.adr %></td>
+              <td><%= player.kast %>%</td>
+            </tr>
+          <% end %>
+        </tbody>
       <% end %>
-      <tr><td></td></tr>
-    <% end %>
-  </tbody>
-</table>
+    </table>
+  </div>
 
-</ul>
+  <h2>Duels</h2>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>X</th>
+          <%= for {teamnum, players} <- @players_by_team do %>
+            <%= for player <- players do %>
+              <th><%= short_player_name(player.name) %></th>
+            <% end %>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for {teamnum, players} <- @players_by_team do %>
+          <%= for player <- players do %>
+            <tr>
+              <td><%= short_player_name(player.name) %></td>
+              <%= for {kills, deaths, victim_name} <- duel_record(player, @kills_by_player, @all_players) do %>
+                <td class="duel-record" data-toggle="tooltip" data-placement="top" title="<%= short_duel_record(kills, deaths, player.name, victim_name) %>">
+                  <%= print_duel_record(kills, deaths) %>
+                </td>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-<span><%= link "Back", to: game_path(@conn, :index) %></span>
+
+  <%= link "Back", to: game_path(@conn, :index), class: "btn btn-primary btn-xs" %>
+</div>

@@ -17,7 +17,7 @@ defmodule CsgoStatsWeb.Router do
     # Use the default browser stack
     pipe_through(:browser)
 
-    get("/", PageController, :index)
+    get("/", GameController, :index)
     get("/parse", PageController, :dump)
     get("/results", PageController, :results)
 

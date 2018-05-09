@@ -65,5 +65,6 @@ defmodule CsgoStats.Stats.Player do
       :xuid,
       :friends_id
     ])
+    |> unique_constraint(:xuid)
   end
 end

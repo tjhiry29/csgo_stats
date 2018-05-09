@@ -69,6 +69,11 @@ defmodule CsgoStats.Stats do
     |> Repo.preload(:player_game_records)
   end
 
+  def get_game_kills(game) do
+    game
+    |> Repo.preload(:kills)
+  end
+
   @doc """
   Creates a game.
 
@@ -301,14 +306,11 @@ defmodule CsgoStats.Stats do
   end
 
   def create_or_get_player(player = %DemoInfoGo.Player{}) do
-    new_player = Player.create_player(player)
+    changeset = Player.create_player(player)
 
     case Repo.get_by(Player, xuid: Map.get(player, :xuid)) do
-      {:ok, existing} ->
-        {:ok, existing}
-
-      _ ->
-        Repo.insert(new_player)
+      nil -> Repo.insert(changeset)
+      new_player -> {:ok, new_player}
     end
   end
 

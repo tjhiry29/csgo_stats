@@ -1,25 +1,25 @@
-<h2>Listing Games</h2>
+<h2>Games</h2>
 
-<table class="table">
-  <thead>
+<table class="table table-sm">
+  <thead class="thead-light">
     <tr>
-      <th>Map name</th>
-
+      <th>Date Added</th>
+      <th>Map Name</th>
+      <th>Score</th>
       <th></th>
     </tr>
   </thead>
   <tbody>
-<%= for game <- @games do %>
-    <tr>
-      <td><%= game.map_name %></td>
-      <td><%= game.team1_score %></td>
-      <td>-<td>
-      <td><%= game.team2_score %></td>
+    <%= for game <- @games do %>
+      <tr>
+        <td><%= date_inserted(game) %>
+        <td><%= game.map_name %></td>
+        <td><%= game.team1_score %> - <%= game.team2_score %></td>
 
-      <td class="text-right">
-        <span><%= link "Show", to: game_path(@conn, :show, game), class: "btn btn-default btn-xs" %></span>
-      </td>
-    </tr>
-<% end %>
+        <td class="text-center">
+          <%= link "Show", to: game_path(@conn, :show, game), class: "btn btn-primary btn-xs" %>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>

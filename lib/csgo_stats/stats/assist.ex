@@ -21,8 +21,8 @@ defmodule CsgoStats.Stats.Assist do
   end
 
   def create_assist(assist, players, game) do
-    assister = Enum.find(players, fn player -> player.name == assist.assister_name end)
-    victim = Enum.find(players, fn player -> player.name == assist.victim_name end)
+    assister = Enum.find(players, fn player -> player.userid == assist.assister_id end)
+    victim = Enum.find(players, fn player -> player.userid == assist.victim_id end)
 
     attrs =
       assist
