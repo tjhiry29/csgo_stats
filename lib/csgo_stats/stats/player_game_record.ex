@@ -15,6 +15,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     field(:kast, :float)
     field(:kill_count, :integer)
     field(:kill_death_ratio, :float)
+    field(:map_name, :string)
     field(:name, :string)
     field(:rounds_played, :integer)
     field(:teamnum, :integer)
@@ -22,6 +23,10 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     field(:userid, :integer)
     field(:xuid, :integer)
     field(:friends_id, :integer)
+    field(:rounds_won, :integer)
+    field(:rounds_lost, :integer)
+    field(:won, :boolean)
+    field(:tie, :boolean)
     belongs_to(:game, Game)
     belongs_to(:team_game_record, TeamGameRecord)
     belongs_to(:player, Player)
@@ -66,6 +71,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       player
       |> Map.from_struct()
       |> Map.put(:userid, player.id)
+      |> Map.put(:map_name, game.map_name)
 
     changeset(%PlayerGameRecord{}, attrs)
     |> put_assoc(:game, game)
@@ -88,12 +94,17 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :kill_death_ratio,
       :kast,
       :kill_count,
+      :map_name,
       :name,
       :rounds_played,
       :teamnum,
       :trade_kills,
       :userid,
-      :xuid
+      :xuid,
+      :rounds_won,
+      :rounds_lost,
+      :won,
+      :tie
     ])
     |> validate_required([
       :adr,
@@ -107,12 +118,17 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :kill_death_ratio,
       :kast,
       :kill_count,
+      :map_name,
       :name,
       :rounds_played,
       :teamnum,
       :trade_kills,
       :userid,
-      :xuid
+      :xuid,
+      :rounds_won,
+      :rounds_lost,
+      :won,
+      :tie
     ])
   end
 

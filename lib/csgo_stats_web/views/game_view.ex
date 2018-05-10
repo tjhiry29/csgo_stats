@@ -1,6 +1,27 @@
 defmodule CsgoStatsWeb.GameView do
   use CsgoStatsWeb, :view
 
+  def title(_template, _assigns) do
+    "CSGO GAME STATS"
+  end
+
+  def get_kills_by_player(kills) do
+    kills |> Enum.group_by(fn k -> k.attacker_id end)
+  end
+
+  def get_round_breakdown(kills) do
+    kills
+    |> Enum.sort_by(fn k -> k.tick end)
+    |> Enum.group_by(fn k -> k.round end)
+    |> Enum.sort_by(fn {roundnum, _kills} -> roundnum end)
+  end
+
+  def format_kill(kill = %CsgoStats.Stats.Kill{}) do
+    "#{kill.attacker_name} killed #{kill.victim_name} with #{kill.weapon} @ #{
+      Float.round(kill.time_elapsed, 1)
+    }s into the round"
+  end
+
   def date_inserted(game) do
     game.inserted_at
     |> NaiveDateTime.to_date()

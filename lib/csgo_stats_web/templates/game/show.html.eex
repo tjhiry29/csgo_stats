@@ -1,3 +1,4 @@
+<% kills_by_player = get_kills_by_player(@kills) %>
 <div class="game-show">
   <h2>Game</h2>
 
@@ -28,7 +29,7 @@
         <tbody>
           <%= for player <- players do %>
             <tr>
-              <td><%= player.name %></td>
+              <td class="clickable"><a href="<%= player_path(@conn, :show, player.player_id) %>"><%= player.name %></a></td>
               <td><%= player.kill_count %></td>
               <td><%= player.assist_count %></td>
               <td><%= player.death_count %></td>
@@ -52,7 +53,7 @@
     <table class="table table-sm">
       <thead class="thead-light">
         <tr>
-          <th>X</th>
+          <th></th>
           <%= for {teamnum, players} <- @players_by_team do %>
             <%= for player <- players do %>
               <th><%= short_player_name(player.name) %></th>
@@ -65,7 +66,7 @@
           <%= for player <- players do %>
             <tr>
               <td><%= short_player_name(player.name) %></td>
-              <%= for {kills, deaths, victim_name} <- duel_record(player, @kills_by_player, @all_players) do %>
+              <%= for {kills, deaths, victim_name} <- duel_record(player, kills_by_player, @all_players) do %>
                 <td class="duel-record" data-toggle="tooltip" data-placement="top" title="<%= short_duel_record(kills, deaths, player.name, victim_name) %>">
                   <%= print_duel_record(kills, deaths) %>
                 </td>
@@ -77,6 +78,29 @@
     </table>
   </div>
 
+  <h2>Round Breakdown</h2>
+  <div class="table-responsive">
+    <table class="table table-sm">
+      <thead class="thead-light">
+        <tr>
+          <th>Round</th>
+          <th>Kills</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for {round_num, kills} <- get_round_breakdown(@kills) do %>
+          <tr>
+            <td><%= round_num %></td>
+            <td>
+              <%= for kill <- kills do %>
+                <div><%= format_kill(kill) %></div>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
   <%= link "Back", to: game_path(@conn, :index), class: "btn btn-primary btn-xs" %>
 </div>

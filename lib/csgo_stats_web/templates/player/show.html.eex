@@ -1,21 +1,14 @@
-<h2>Show Player</h2>
+<h2><%= @player.name %></h2>
 
-<ul>
+<div class="game-info">
+  <span class="bold">XUID:</span> <%= @player.xuid %>
+</div>
 
-  <li>
-    <strong>Name:</strong>
-    <%= @player.name %>
-  </li>
-
-  <li>
-    <strong>Xuid:</strong>
-    <%= @player.xuid %>
-  </li>
-
-<table class="table">
-  <thead>
+<table class="table table-sm">
+  <thead class="thead-light">
     <tr>
       <th>Name</th>
+      <th>Map</th>
       <th>Kills</th>
       <th>Assists</th>
       <th>Deaths</th>
@@ -23,15 +16,22 @@
       <th>First Kills</th>
       <th>First Deaths</th>
       <th>Headshots</th>
+      <th>HS%</th>
       <th>Trade Kills</th>
       <th>ADR</th>
       <th>KAST</th>
+      <th>Date Added</th>
     </tr>
   </thead>
   <tbody>
 <%= for player <- @player.player_game_records do %>
     <tr>
-      <td><%= player.name %></td>
+      <td><%= player.name %>
+      <td class="clickable">
+        <a href="<%= game_path(@conn, :show, player.game_id) %>">
+          <%= player.map_name %>
+        </a>
+      </td>
       <td><%= player.kill_count %></td>
       <td><%= player.assist_count %></td>
       <td><%= player.death_count %></td>
@@ -43,11 +43,10 @@
       <td><%= player.trade_kills %></td>
       <td><%= player.adr %></td>
       <td><%= player.kast %></td>
+      <td><%= date_inserted(player) %>
     </tr>
 <% end %>
   </tbody>
 </table>
-
-</ul>
 
 <span><%= link "Back", to: player_path(@conn, :index) %></span>

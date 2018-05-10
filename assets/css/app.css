@@ -45,3 +45,14 @@ body {
 .duel-record:hover {
   background-color: #c7c9cc;
 }
+
+.clickable:hover {
+  background-color: #c7c9cc;
+}
+
+.clickable a {
+  display: block;
+  color: #000;
+  cursor: pointer;
+  text-decoration: none;
+}

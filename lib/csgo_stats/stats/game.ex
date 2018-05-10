@@ -25,6 +25,7 @@ defmodule CsgoStats.Stats.Game do
     has_many(:kills, Kill)
     has_many(:team_game_records, TeamGameRecord)
     has_many(:player_game_records, PlayerGameRecord)
+    has_many(:players, through: [:player_game_records, :player])
 
     timestamps()
   end

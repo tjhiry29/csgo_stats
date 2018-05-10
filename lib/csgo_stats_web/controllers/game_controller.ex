@@ -14,14 +14,11 @@ defmodule CsgoStatsWeb.GameController do
       |> Stats.get_game_player_records()
       |> Stats.get_game_kills()
 
-    kills_by_player =
-      game.kills
-      |> Enum.group_by(fn k -> k.attacker_id end)
-
     players_by_team =
       game.player_game_records
       |> Enum.sort_by(fn p -> p.kill_count end, &>=/2)
-      |> Enum.group_by(fn p -> p.teamnum end)
+      |> Enum.group_by(fn p -> p.team_game_record_id end)
+      |> Enum.sort_by(fn {teamnum, _} -> teamnum end)
 
     all_players =
       players_by_team
@@ -33,7 +30,7 @@ defmodule CsgoStatsWeb.GameController do
       game: game,
       all_players: all_players,
       players_by_team: players_by_team,
-      kills_by_player: kills_by_player
+      kills: game.kills
     )
   end
 
