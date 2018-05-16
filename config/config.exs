@@ -20,22 +20,23 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :exq,
-  name: Exq,
-  host: "127.0.0.1",
-  port: 6379,
-  namespace: "exq",
-  queues: [{"demo_parsing", 10}],
-  poll_timeout: 50,
-  scheduler_poll_timeout: 200,
-  scheduler_enable: true,
-  max_retries: 5,
-  shutdown_timeout: 60000
+# TODO: re-implement exq or remove
+# config :exq,
+#   name: Exq,
+#   host: "127.0.0.1",
+#   port: 6379,
+#   namespace: "exq",
+#   queues: [{"demo_parsing", 10}],
+#   poll_timeout: 50,
+#   scheduler_poll_timeout: 200,
+#   scheduler_enable: true,
+#   max_retries: 5,
+#   shutdown_timeout: 60000
 
-config :exq_ui,
-  web_port: 4040,
-  web_namespace: "",
-  server: true
+# config :exq_ui,
+#   web_port: 4040,
+#   web_namespace: "",
+#   server: true
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

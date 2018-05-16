@@ -1,7 +1,7 @@
 <h2>Listing Players</h2>
 
-<table class="table">
-  <thead>
+<table class="table table-sm">
+  <thead class="thead-light">
     <tr>
       <th>Name</th>
       <th>Xuid</th>
@@ -19,7 +19,7 @@
       <td><%= player.friends_id %></td>
 
       <td class="text-right">
-        <span><%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-default btn-xs" %></span>
+        <%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-primary btn-xs" %>
       </td>
     </tr>
 <% end %>
