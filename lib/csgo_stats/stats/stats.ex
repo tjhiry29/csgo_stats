@@ -305,7 +305,7 @@ defmodule CsgoStats.Stats do
     |> Repo.insert()
   end
 
-  def create_or_get_player(player = %DemoInfoGo.Player{}) do
+  def create_or_get_player(%DemoInfoGo.Player{} = player) do
     changeset = Player.create_player(player)
 
     case Repo.get_by(Player, xuid: Map.get(player, :xuid)) do
@@ -454,6 +454,16 @@ defmodule CsgoStats.Stats do
       end)
       |> batch_insert()
     end)
+  end
+
+  def create_game_from_demo(info) do
+    player_info = Map.get(info, "player_info")
+    tick_rate = Map.get(info, "tick_rate")
+    map_name = Map.get(info, "map_name")
+    player_round_records = Map.get(info, "player_round_records")
+    kills = Map.get(info, "kills")
+    grenade_throws = Map.get(info, "grenade_throws")
+    round_wins = Map.get(info, "round_wins")
   end
 
   @doc """

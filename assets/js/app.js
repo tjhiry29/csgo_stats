@@ -12,14 +12,44 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html";
+import { Socket } from "phoenix";
+import demo_loader from "./demo_loader";
 
 // Import local files
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
+let socket = new Socket("/socket", { params: { token: window.userToken } });
+socket.connect();
+let channel = socket.channel("test:test", {});
+channel
+  .join()
+  .receive("ok", resp => {
+    console.log("Joined successfully", resp);
+  })
+  .receive("error", resp => {
+    console.log("Unable to join", resp);
+  });
+
+channel.on("test:stuff", msg => {
+  console.log(msg);
+});
 
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
+});
+
+$("#testupload").on("click", () => {
+  $("#fileupload").trigger("click");
+});
+
+$("#fileupload").on("change", () => {
+  let file = $("#fileupload").prop("files")[0];
+  channel.push("test:start", { file_name: file.name });
+  demo_loader(file, results => {
+    channel.push("test:info", {
+      info: results
+    });
+  });
 });
