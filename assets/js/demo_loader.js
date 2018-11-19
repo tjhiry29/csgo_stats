@@ -47,6 +47,14 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     roundWins = [],
     playerInfo = [];
 
+  const updateGrenadeThrowInformation = (idx, e) => {
+    if (idx != -1) {
+      let grenadeThrow = grenadeThrows[idx];
+      grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
+      grenadeThrows[idx] = grenadeThrow;
+    }
+  };
+
   demoFile.on("start", () => {
     tickRate = demoFile.tickRate;
     mapName = demoFile.header.mapName;
@@ -138,11 +146,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
           gt.userid === e.attacker &&
           gt.detonated
       );
-      if (idx != -1) {
-        let grenadeThrow = grenadeThrows[idx];
-        grenadeThrow.damage_dealt += e.dmg_health;
-        grenadeThrows[idx] = grenadeThrow;
-      }
+      updateGrenadeThrowInformation(idx, e);
     }
     if (e.weapon === "inferno") {
       e = setBasicEventInfo(e, demoFile, mapName, roundNum);
@@ -154,11 +158,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
           gt.userid === e.attacker &&
           !gt.expired
       );
-      if (idx != -1) {
-        let grenadeThrow = grenadeThrows[idx];
-        grenadeThrow.damage_dealt += e.dmg_health;
-        grenadeThrows[idx] = grenadeThrow;
-      }
+      updateGrenadeThrowInformation(idx, e);
     }
     const victimIdx = playerRoundRecords[roundNum - 1].findIndex(
       p => p.userid === e.userid
@@ -196,11 +196,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
         gt.round === roundNum &&
         gt.userid === e.userid
     );
-    if (idx != -1) {
-      let grenadeThrow = grenadeThrows[idx];
-      grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
-      grenadeThrows[idx] = grenadeThrow;
-    }
+    updateGrenadeThrowInformation(idx, e);
   });
 
   demoFile.gameEvents.on("smokegrenade_detonate", e => {
@@ -212,11 +208,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
         gt.round === roundNum &&
         !gt.detonated
     );
-    if (idx != -1) {
-      let grenadeThrow = grenadeThrows[idx];
-      grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
-      grenadeThrows[idx] = grenadeThrow;
-    }
+    updateGrenadeThrowInformation(idx, e);
   });
 
   demoFile.gameEvents.on("inferno_startburn", e => {
@@ -228,11 +220,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
         gt.round === roundNum &&
         !gt.detonated
     );
-    if (idx != -1) {
-      let grenadeThrow = grenadeThrows[idx];
-      grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
-      grenadeThrows[idx] = grenadeThrow;
-    }
+    updateGrenadeThrowInformation(idx, e);
   });
 
   demoFile.gameEvents.on("inferno_expire", e => {
@@ -259,11 +247,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
         gt.round === roundNum &&
         gt.userid === e.userid
     );
-    if (idx != -1) {
-      let grenadeThrow = grenadeThrows[idx];
-      grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
-      grenadeThrows[idx] = grenadeThrow;
-    }
+    updateGrenadeThrowInformation(idx, e);
   });
 
   demoFile.gameEvents.on("player_blind", e => {
@@ -275,7 +259,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     );
     if (idx != -1) {
       let grenadeThrow = grenadeThrows[idx];
-      grenadeThrow.blind_duration += e.blind_duration;
+      grenadeThrow.total_blind_duration += e.blind_duration;
       grenadeThrows[idx] = grenadeThrow;
     }
   });
@@ -300,9 +284,6 @@ const outputDemoInfo = (buffer, onEnd, file) => {
 
     if (roundNum != 0) {
       kills.push(e);
-    }
-    if (e.round === 30) {
-      console.log(e);
     }
   });
 

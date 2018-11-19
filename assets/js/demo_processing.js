@@ -21,7 +21,7 @@ export const setGrenadeThrowInfo = (grenadeThrow, user) => {
     origin: convertToArray(user.position),
     facing: convertToArray(user.eyeAngles),
     damage_dealt: 0,
-    blind_duration: 0,
+    total_blind_duration: 0,
     detonated: false,
     expired: false
   });
@@ -116,11 +116,12 @@ export const createPlayers = (players, mapName, teams) => {
       rounds_played: teams[2].score + teams[3].score,
       won:
         teams[player.teamNumber].score >
-        teams[player.teamNumber == 2 ? 2 : 3].score,
+        teams[player.teamNumber == 2 ? 3 : 2].score,
       tie: teams[2].score == teams[3].score,
       teamnum: player.teamNumber,
       xuid: player.userInfo.xuid.toString(),
       guid: player.userInfo.guid,
+      fakeplayer: player.userInfo.fakePlayer,
       friends_id: player.userInfo.friendsId
     };
   });
