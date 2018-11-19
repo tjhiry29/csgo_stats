@@ -3,16 +3,6 @@ defmodule CsgoStats.Stats.Game do
   import Ecto.Changeset
   alias CsgoStats.Stats.{TeamGameRecord, PlayerGameRecord, Kill, GameEvent, Assist}
 
-  @derive {Poison.Encoder,
-           only: [
-             :id,
-             :map_name,
-             :rounds_played,
-             :team1_score,
-             :team2_score,
-             :tick_rate,
-             :demo_name
-           ]}
   schema "games" do
     field(:demo_name, :string)
     field(:map_name, :string)

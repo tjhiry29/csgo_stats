@@ -45,9 +45,10 @@ $("#testupload").on("click", () => {
 });
 
 $("#fileupload").on("change", () => {
+  let startTime = Date.now();
   let file = $("#fileupload").prop("files")[0];
-  channel.push("test:start", { file_name: file.name });
   demo_loader(file, results => {
+    console.log((Date.now() - startTime) / 1000 / 60);
     channel.push("test:info", {
       info: results
     });

@@ -1,6 +1,5 @@
 defmodule CsgoStatsWeb.PageController do
   use CsgoStatsWeb, :controller
-  alias CsgoStats.Stats
   require DemoInfoGo
 
   def index(conn, _params) do

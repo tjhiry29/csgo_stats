@@ -8,17 +8,119 @@ const GRENADE_WEAPONS = [
   "weapon_smokegrenade"
 ];
 
-const setBasicEventInfo = (event, demoFile) => {
-  event.tick = demoFile.currentTick;
-  event.current_time = demoFile.current_time;
-  event.round = demoFile.gameRules.roundsPlayed + 1;
-  return event;
+const setBasicEventInfo = (event, demoFile, mapName, roundNum) => {
+  return Object.assign({}, event, {
+    map_name: mapName,
+    tick: demoFile.currentTick,
+    time_elapsed: demoFile.current_time,
+    round: roundNum
+  });
 };
 
 const setGrenadeDetonationInfo = (grenadeThrow, e) => {
-  grenadeThrow.location = { x: e.x, y: e.y, z: e.z };
-  grenadeThrow.detonated = true;
-  return grenadeThrow;
+  return Object.assign({}, grenadeThrow, {
+    location: { x: e.x, y: e.y, z: e.z },
+    detonated: true
+  });
+};
+
+const setKillInfo = (e, demoFile) => {
+  const victim = demoFile.entities.getByUserId(e.userid);
+  const victimName = victim ? victim.name : "unnamed";
+  const victimPosition = victim
+    ? victim.position
+    : { x: null, y: null, z: null };
+  const attacker = demoFile.entities.getByUserId(e.attacker);
+  const attackerName = attacker ? attacker.name : "unnamed";
+  const attackerPosition = attacker
+    ? attacker.position
+    : { x: null, y: null, z: null };
+  const assister = demoFile.entities.getByUserId(e.assister);
+  const assisterName = assister ? assister.name : "unnamed";
+  const assisterPosition = assister
+    ? assister.position
+    : { x: null, y: null, z: null };
+  return Object.assign({}, e, {
+    attacker_userid: e.attacker,
+    attacker_name: attackerName,
+    attacker_position: attackerPosition,
+    victim_userid: e.userid,
+    victim_name: victimName,
+    victim_position: victimPosition,
+    assister_userid: e.assister,
+    assister_name: assisterName,
+    assister_position: assisterPosition,
+    first_of_round: false,
+    trade: false
+  });
+};
+
+const createTeams = teams => {
+  return teams.map(team => {
+    return {
+      score: team.score,
+      rounds_won: team.score,
+      teamnum: team.teamNumber,
+      team_name: team.teamName,
+      team_number: team.teamNumber,
+      players: team.members.map(player => {
+        return {
+          name: player.name,
+          userid: player.userId
+        };
+      })
+    };
+  });
+};
+
+const createMatchStats = players => {
+  let matchStats = {};
+  players.forEach(player => {
+    const playerStats = player.matchStats.map((stat, idx) => {
+      return Object.assign({}, stat, {
+        name: player.name,
+        userid: player.userId,
+        round: idx + 1,
+        dead: stat.deaths >= 1,
+        total_damage_dealt: stat.damage,
+        teamnum: player.teamNumber,
+        traded: false
+      });
+    });
+    matchStats[player.userId] = playerStats;
+  });
+  return matchStats;
+};
+
+const createPlayers = (players, mapName, teams) => {
+  return players.map(player => {
+    return {
+      name: player.name,
+      userid: player.userId,
+      map_name: mapName,
+      kill_count: player.kills,
+      death_count: player.deaths,
+      assist_count: player.assists,
+      headshot_count: 0,
+      headshot_percentage: 0.0,
+      kill_death_ratio: player.kills / player.deaths,
+      adr: 0.0,
+      trade_kills: 0,
+      deaths_traded: 0,
+      first_deaths: 0,
+      first_kills: 0,
+      kast: 0,
+      rounds_played: teams[2].score + teams[3].score,
+      won:
+        teams[player.teamNumber].score >
+        teams[player.teamNumber == 2 ? 2 : 3].score,
+      tie: teams[2].score == teams[3].score,
+      teamnum: player.teamNumber,
+      xuid: player.userInfo.xuid.toString(),
+      guid: player.userInfo.guid,
+      friends_id: player.userInfo.friendsId
+    };
+  });
 };
 
 const findTradeKills = (kills, kill, tickRate) => {
@@ -28,19 +130,20 @@ const findTradeKills = (kills, kill, tickRate) => {
       k.tick >= kill.tick &&
       k.tick <= kill.tick + 5 * tickRate
     ) {
-      k.trade_kill = true;
+      k.trade = true;
+      k.killTraded = kill;
     }
     return k;
   });
 };
 
 const processKills = (kills, tickRate) => {
-  let killsByRound = groupBy(kills, "round");
+  const killsByRound = groupBy(kills, "round");
   let finalKills = [];
   Object.keys(killsByRound).forEach(key => {
     let kills = killsByRound[key];
     let sortedKills = kills.sort((k1, k2) => k1.tick - k2.tick);
-    sortedKills[0].first_kill = true;
+    sortedKills[0].first_of_round = true;
     let resultKills = sortedKills;
     sortedKills.forEach(kill => {
       resultKills = findTradeKills(resultKills, kill, tickRate);
@@ -50,13 +153,85 @@ const processKills = (kills, tickRate) => {
   return finalKills.flat();
 };
 
+const getPlayersById = players => {
+  return players.reduce(function(acc, obj) {
+    var key = obj["userid"];
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key] = obj;
+    return acc;
+  }, {});
+};
+
+const killStats = (kills, playersById, playerRoundRecords) => {
+  kills.forEach(kill => {
+    const attacker = playersById[kill.attacker_userid];
+    const victim = playersById[kill.victim_userid];
+
+    if (kill.headshot) {
+      attacker.headshot_count++;
+    }
+    if (kill.first_of_round) {
+      attacker.first_kills++;
+      victim.first_deaths++;
+    }
+    if (kill.trade) {
+      attacker.trade_kills++;
+      if (kill.killTraded) {
+        const tradedPlayer = playersById[kill.killTraded.victim_userid];
+        tradedPlayer.deaths_traded++;
+        let idx = playerRoundRecords[kill.round - 1].findIndex(
+          p => p.userid == tradedPlayer.userid
+        );
+        playerRoundRecords[kill.round - 1][idx].traded = true;
+        playersById[tradedPlayer.userid] = tradedPlayer;
+      }
+    }
+    playersById[kill.attacker_userid] = attacker;
+    playersById[kill.victim_userid] = victim;
+  });
+  return [playersById, playerRoundRecords];
+};
+
+const aggreggateStats = (playersById, playerRoundRecords) => {
+  let playerRoundRecordsById = {};
+  playerRoundRecords.forEach(roundRecords => {
+    roundRecords.forEach(record => {
+      if (!playerRoundRecordsById[record.userid]) {
+        playerRoundRecordsById[record.userid] = [];
+      }
+      playerRoundRecordsById[record.userid].push(record);
+    });
+  });
+  Object.keys(playersById).forEach(id => {
+    const player = playersById[id];
+    const stats = playerRoundRecordsById[id];
+    const total_damage_dealt = stats.reduce((acc, stat) => {
+      return acc + stat.total_damage_dealt;
+    }, 0);
+    const adr = total_damage_dealt / stats.length;
+    const kast_score = stats.reduce((acc, stat) => {
+      if (!stat.dead || stat.kills >= 1 || stat.assists >= 1 || stat.traded) {
+        acc++;
+      }
+      return acc;
+    }, 0);
+    player.headshot_percentage = player.headshot_count / player.kill_count;
+    player.kast = kast_score / stats.length;
+    player.adr = adr;
+    playersById[player.userid] = player;
+  });
+  return playersById;
+};
+
 const onFileUploaded = (file, onEnd) => {
   let reader = new FileReader();
 
   reader.onloadend = evt => {
     if (evt.target.readyState == FileReader.DONE) {
       let buffer = reader.result;
-      outputDemoInfo(buffer, onEnd);
+      outputDemoInfo(buffer, onEnd, file);
     } else {
       // TODO: error state
     }
@@ -65,7 +240,7 @@ const onFileUploaded = (file, onEnd) => {
   reader.readAsArrayBuffer(file);
 };
 
-const outputDemoInfo = (buffer, onEnd) => {
+const outputDemoInfo = (buffer, onEnd, file) => {
   let demoFile = new demofile.DemoFile();
   let mapName, tickRate, playbackTicks;
   let roundNum = 0;
@@ -87,16 +262,51 @@ const outputDemoInfo = (buffer, onEnd) => {
     if (e.table.name === "userinfo" && e.userData != null) {
       console.log("\nPlayer info updated:");
       console.log(e.entryIndex, e.userData);
-      playerInfo.push(e);
+      playerInfo.push(e.userData);
     }
   });
 
   demoFile.gameEvents.on("round_announce_match_start", () => {
     roundNum++;
+    let players = demoFile.entities.players;
+    players = players.map(player => {
+      return {
+        round: roundNum,
+        name: player.name,
+        userid: player.userId,
+        health: 100,
+        dead: false,
+        traded: false,
+        total_damage_dealt: 0.0,
+        teamnum: player.teamNumber,
+        kills: 0,
+        assists: 0
+      };
+    });
+    playerRoundRecords.push(players);
   });
 
   demoFile.gameEvents.on("round_end", e => {
     roundWins.push(e);
+  });
+
+  demoFile.gameEvents.on("round_start", e => {
+    let players = demoFile.entities.players;
+    players = players.map(player => {
+      return {
+        round: roundNum,
+        name: player.name,
+        userid: player.userId,
+        health: 100,
+        dead: false,
+        traded: false,
+        total_damage_dealt: 0.0,
+        teamnum: player.teamNumber,
+        kills: 0,
+        assists: 0
+      };
+    });
+    playerRoundRecords.push(players);
   });
 
   demoFile.gameEvents.on("round_officially_ended", e => {
@@ -104,19 +314,6 @@ const outputDemoInfo = (buffer, onEnd) => {
 
     let terrorists = teams[demofile.TEAM_TERRORISTS];
     let cts = teams[demofile.TEAM_CTS];
-    let players = demoFile.entities.players;
-    players = players.map(player => {
-      return {
-        round: roundNum,
-        name: player.name,
-        userid: player.userId,
-        kills: player.kills,
-        deaths: player.deaths
-      };
-    });
-    playerRoundRecords.push(players);
-    roundNum++;
-
     console.log(
       "\tTerrorists: %s score %d\n\tCTs: %s score %d",
       terrorists.clanName,
@@ -124,12 +321,13 @@ const outputDemoInfo = (buffer, onEnd) => {
       cts.clanName,
       cts.score
     );
+    roundNum++;
   });
 
   demoFile.gameEvents.on("weapon_fire", e => {
     if (GRENADE_WEAPONS.includes(e.weapon) && roundNum != 0) {
       const user = demoFile.entities.getByUserId(e.userid);
-      e = setBasicEventInfo(e, demoFile);
+      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
       e.origin = user.position;
       e.facing = user.eyeAngles;
       e.damage_dealt = 0;
@@ -142,7 +340,7 @@ const outputDemoInfo = (buffer, onEnd) => {
 
   demoFile.gameEvents.on("player_hurt", e => {
     if (e.weapon == "hegrenade") {
-      e = setBasicEventInfo(e, demoFile);
+      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
       let idx = grenadeThrows.findIndex(
         gt =>
           gt.weapon == "weapon_hegrenade" &&
@@ -157,7 +355,7 @@ const outputDemoInfo = (buffer, onEnd) => {
       }
     }
     if (e.weapon == "inferno") {
-      e = setBasicEventInfo(e, demoFile);
+      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
       let idx = grenadeThrows.findIndex(
         gt =>
           (gt.weapon == "weapon_molotov" || gt.weapon == "weapon_incgrenade") &&
@@ -171,11 +369,35 @@ const outputDemoInfo = (buffer, onEnd) => {
         grenadeThrows[idx] = grenadeThrow;
       }
     }
+    const victimIdx = playerRoundRecords[roundNum - 1].findIndex(
+      p => p.userid == e.userid
+    );
+    const victim = playerRoundRecords[roundNum - 1][victimIdx];
+    const attackerIdx = playerRoundRecords[roundNum - 1].findIndex(
+      p => p.userid == e.attacker
+    );
+    const attacker = playerRoundRecords[roundNum - 1][attackerIdx];
+    let dmg_dealt = e.dmg_health;
+    const health = victim ? victim.health : 0;
+    let new_health = health - e.dmg_health;
+    if (new_health < 0) {
+      new_health = 0;
+      dmg_dealt = health;
+    }
+    if (victim) {
+      victim.health = new_health;
+      playerRoundRecords[roundNum - 1][victimIdx] = victim;
+    }
+    if (attacker) {
+      attacker.total_damage_dealt += parseInt(dmg_dealt);
+      playerRoundRecords[roundNum - 1][attackerIdx] = attacker;
+    }
+
     playerDamaged.push(e);
   });
 
   demoFile.gameEvents.on("flashbang_detonate", e => {
-    e = setBasicEventInfo(e, demoFile);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -191,7 +413,7 @@ const outputDemoInfo = (buffer, onEnd) => {
   });
 
   demoFile.gameEvents.on("smokegrenade_detonate", e => {
-    e = setBasicEventInfo(e, demoFile);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -207,7 +429,7 @@ const outputDemoInfo = (buffer, onEnd) => {
   });
 
   demoFile.gameEvents.on("inferno_startburn", e => {
-    e = setBasicEventInfo(e, demoFile);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -223,7 +445,7 @@ const outputDemoInfo = (buffer, onEnd) => {
   });
 
   demoFile.gameEvents.on("inferno_expire", e => {
-    e = setBasicEventInfo(e, demoFile);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -238,7 +460,7 @@ const outputDemoInfo = (buffer, onEnd) => {
   });
 
   demoFile.gameEvents.on("hegrenade_detonate", e => {
-    e = setBasicEventInfo(e, demoFile);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -268,36 +490,43 @@ const outputDemoInfo = (buffer, onEnd) => {
   });
 
   demoFile.gameEvents.on("player_death", e => {
-    let victim = demoFile.entities.getByUserId(e.userid);
-    let victimName = victim ? victim.name : "unnamed";
-    let attacker = demoFile.entities.getByUserId(e.attacker);
-    let attackerName = attacker ? attacker.name : "unnamed";
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setKillInfo(e, demoFile);
+    const playerRecordIdx = playerRoundRecords[roundNum - 1].findIndex(
+      p => p.userid == e.userid
+    );
+    const attackerIdx = playerRoundRecords[roundNum - 1].findIndex(
+      p => p.userid == e.attacker
+    );
+    const assisterIdx = playerRoundRecords[roundNum - 1].findIndex(
+      p => p.userid == e.assister
+    );
+    if (playerRoundRecords[roundNum - 1][assisterIdx]) {
+      playerRoundRecords[roundNum - 1][assisterIdx].assists++;
+    }
+    playerRoundRecords[roundNum - 1][attackerIdx].kills++;
+    playerRoundRecords[roundNum - 1][playerRecordIdx].dead = true;
 
-    e = setBasicEventInfo(e, demoFile);
-    e.attacker_name = attackerName;
-    e.victim_name = victimName;
-    e.first_kill = false;
-    e.trade_kill = false;
     if (roundNum != 0) {
       kills.push(e);
+    }
+    if (e.round == 30) {
+      console.log(e);
     }
   });
 
   demoFile.on("end", () => {
-    let matchStats = [];
-    demoFile.entities.players.forEach(player => {
-      const playerStats = player.matchStats.map((stat, idx) => {
-        return Object.assign({}, stat, {
-          name: player.name,
-          userId: player.userId,
-          round: idx + 1
-        });
-      });
-      matchStats.push(playerStats);
-    });
+    const teams = createTeams(demoFile.teams);
+    let matchStats = createMatchStats(demoFile.entities.players);
     kills = processKills(kills, tickRate);
+    const players = createPlayers(demoFile.entities.players, mapName, teams);
+    let playersById = getPlayersById(players);
+    let results = killStats(kills, playersById, playerRoundRecords);
+    playersById = results[0];
+    playerRoundRecords = results[1];
+    playersById = aggreggateStats(playersById, playerRoundRecords);
+    console.log(teams);
     console.log(tickRate);
-    console.log(playbackTicks);
     console.log(mapName);
     console.log(playerRoundRecords);
     console.log(kills);
@@ -306,16 +535,18 @@ const outputDemoInfo = (buffer, onEnd) => {
     console.log(playerDamaged);
     console.log(roundWins);
     console.log(matchStats);
+    console.log(playersById);
     onEnd({
       tick_rate: tickRate,
-      playback_ticks: playbackTicks,
       map_name: mapName,
       player_round_records: matchStats,
       kills,
       grenade_throws: grenadeThrows,
       round_wins: roundWins,
       player_info: playerInfo,
-      teams: demoFile.teams
+      teams,
+      demo_name: file.name,
+      players: playersById
     });
   });
 

@@ -323,7 +323,7 @@ defmodule CsgoStats.Stats do
     Enum.map(players, fn player ->
       {:ok, new_player} = create_or_get_player(player)
 
-      PlayerGameRecord.create_player(player, game, team, new_player)
+      PlayerGameRecord.create_player_from_stats(player, game, team, new_player)
     end)
     |> batch_insert()
   end

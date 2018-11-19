@@ -10,6 +10,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     field(:deaths_traded, :integer)
     field(:first_deaths, :integer)
     field(:first_kills, :integer)
+    field(:guid, :string)
     field(:headshot_count, :integer)
     field(:headshot_percentage, :float)
     field(:kast, :float)
@@ -61,7 +62,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     end
   end
 
-  def create_player(
+  def create_player_from_stats(
         player = %DemoInfoGo.Player{},
         game = %Game{},
         team = %TeamGameRecord{},
@@ -101,6 +102,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :trade_kills,
       :userid,
       :xuid,
+      :guid,
       :rounds_won,
       :rounds_lost,
       :won,
@@ -125,6 +127,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :trade_kills,
       :userid,
       :xuid,
+      :guid,
       :rounds_won,
       :rounds_lost,
       :won,

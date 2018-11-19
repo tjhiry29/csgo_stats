@@ -28,7 +28,11 @@ defmodule CsgoStats.Stats.TeamGameRecord do
       |> Map.from_struct()
 
     changeset(struct, attrs)
-    |> put_assoc(:game, attrs.game)
+    |> put_game(attrs.game)
+  end
+
+  def put_game(team, game) do
+    put_assoc(team, :game, game)
   end
 
   @doc false

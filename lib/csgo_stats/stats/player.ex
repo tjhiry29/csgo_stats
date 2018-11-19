@@ -7,6 +7,7 @@ defmodule CsgoStats.Stats.Player do
     field(:name, :string)
     field(:xuid, :integer)
     field(:friends_id, :integer)
+    field(:guid, :string)
 
     has_many(:player_game_records, PlayerGameRecord)
     timestamps()
@@ -58,11 +59,13 @@ defmodule CsgoStats.Stats.Player do
     |> cast(attrs, [
       :name,
       :xuid,
+      :guid,
       :friends_id
     ])
     |> validate_required([
       :name,
       :xuid,
+      :guid,
       :friends_id
     ])
     |> unique_constraint(:xuid)

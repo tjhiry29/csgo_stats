@@ -21,6 +21,7 @@ defmodule CsgoStats.Repo.Migrations.CreatePlayerGameRecords do
       add(:trade_kills, :integer)
       add(:userid, :integer)
       add(:xuid, :bigint)
+      add(:guid, :string)
       add(:friends_id, :bigint)
       add(:rounds_won, :integer)
       add(:rounds_lost, :integer)
@@ -32,6 +33,10 @@ defmodule CsgoStats.Repo.Migrations.CreatePlayerGameRecords do
 
       timestamps()
     end
+
+    create(index(:player_game_records, [:friends_id]))
+    create(index(:player_game_records, [:guid]))
+    create(index(:player_game_records, [:xuid]))
 
     create(index(:player_game_records, [:game_id, :team_game_record_id, :map_name, :xuid]))
   end
