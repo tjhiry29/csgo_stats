@@ -8,3 +8,9 @@ export const groupBy = (objectArray, property) => {
     return acc;
   }, {});
 };
+
+export const convertToArray = hash => {
+  return Object.keys(hash).map(key => {
+    return hash[key];
+  });
+};
