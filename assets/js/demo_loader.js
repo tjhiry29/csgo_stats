@@ -8,6 +8,12 @@ const GRENADE_WEAPONS = [
   "weapon_smokegrenade"
 ];
 
+const convertPosition = position => {
+  return Object.keys(position).map(key => {
+    return position[key];
+  });
+};
+
 const setBasicEventInfo = (event, demoFile, mapName, roundNum) => {
   return Object.assign({}, event, {
     map_name: mapName,
@@ -19,8 +25,19 @@ const setBasicEventInfo = (event, demoFile, mapName, roundNum) => {
 
 const setGrenadeDetonationInfo = (grenadeThrow, e) => {
   return Object.assign({}, grenadeThrow, {
-    location: { x: e.x, y: e.y, z: e.z },
+    location: [e.x, e.y, e.z],
     detonated: true
+  });
+};
+
+const setGrenadeThrowInfo = (grenadeThrow, user) => {
+  return Object.assign({}, grenadeThrow, {
+    origin: convertPosition(user.position),
+    facing: convertPosition(user.eyeAngles),
+    damage_dealt: 0,
+    blind_duration: 0,
+    detonated: false,
+    expired: false
   });
 };
 
@@ -28,17 +45,17 @@ const setKillInfo = (e, demoFile) => {
   const victim = demoFile.entities.getByUserId(e.userid);
   const victimName = victim ? victim.name : "unnamed";
   const victimPosition = victim
-    ? victim.position
+    ? convertPosition(victim.position)
     : { x: null, y: null, z: null };
   const attacker = demoFile.entities.getByUserId(e.attacker);
   const attackerName = attacker ? attacker.name : "unnamed";
   const attackerPosition = attacker
-    ? attacker.position
+    ? convertPosition(attacker.position)
     : { x: null, y: null, z: null };
   const assister = demoFile.entities.getByUserId(e.assister);
   const assisterName = assister ? assister.name : "unnamed";
   const assisterPosition = assister
-    ? assister.position
+    ? convertPosition(assister.position)
     : { x: null, y: null, z: null };
   return Object.assign({}, e, {
     attacker_userid: e.attacker,
@@ -328,12 +345,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     if (GRENADE_WEAPONS.includes(e.weapon) && roundNum != 0) {
       const user = demoFile.entities.getByUserId(e.userid);
       e = setBasicEventInfo(e, demoFile, mapName, roundNum);
-      e.origin = user.position;
-      e.facing = user.eyeAngles;
-      e.damage_dealt = 0;
-      e.blind_duration = 0;
-      e.detonated = false;
-      e.expired = false;
+      e = setGrenadeThrowInfo(e, user);
       grenadeThrows.push(e);
     }
   });
@@ -539,7 +551,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     onEnd({
       tick_rate: tickRate,
       map_name: mapName,
-      player_round_records: matchStats,
+      player_round_records: playerRoundRecords,
       kills,
       grenade_throws: grenadeThrows,
       round_wins: roundWins,
