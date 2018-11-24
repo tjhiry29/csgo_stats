@@ -9,7 +9,8 @@ import {
   processKills,
   getPlayersById,
   killStats,
-  aggreggateStats
+  aggreggateStats,
+  updateDamageInformation
 } from "./demo_processing";
 
 const GRENADE_WEAPONS = [
@@ -137,8 +138,8 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("player_hurt", e => {
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
     if (e.weapon === "hegrenade") {
-      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
       let idx = grenadeThrows.findIndex(
         gt =>
           gt.weapon === "weapon_hegrenade" &&
@@ -149,7 +150,6 @@ const outputDemoInfo = (buffer, onEnd, file) => {
       updateGrenadeThrowInformation(idx, e);
     }
     if (e.weapon === "inferno") {
-      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
       let idx = grenadeThrows.findIndex(
         gt =>
           (gt.weapon === "weapon_molotov" ||
@@ -160,29 +160,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
       );
       updateGrenadeThrowInformation(idx, e);
     }
-    const victimIdx = playerRoundRecords[roundNum - 1].findIndex(
-      p => p.userid === e.userid
-    );
-    const victim = playerRoundRecords[roundNum - 1][victimIdx];
-    const attackerIdx = playerRoundRecords[roundNum - 1].findIndex(
-      p => p.userid === e.attacker
-    );
-    const attacker = playerRoundRecords[roundNum - 1][attackerIdx];
-    let dmg_dealt = e.dmg_health;
-    const health = victim ? victim.health : 0;
-    let new_health = health - e.dmg_health;
-    if (new_health < 0) {
-      new_health = 0;
-      dmg_dealt = health;
-    }
-    if (victim) {
-      victim.health = new_health;
-      playerRoundRecords[roundNum - 1][victimIdx] = victim;
-    }
-    if (attacker) {
-      attacker.total_damage_dealt += parseInt(dmg_dealt);
-      playerRoundRecords[roundNum - 1][attackerIdx] = attacker;
-    }
+    playerRoundRecords = updateDamageInformation(playerRoundRecords, e);
 
     playerDamaged.push(e);
   });

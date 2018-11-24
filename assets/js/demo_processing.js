@@ -168,6 +168,35 @@ export const getPlayersById = players => {
   }, {});
 };
 
+export const updateDamageInformation = (playerRoundRecords, e) => {
+  const victimIdx = playerRoundRecords[e.round - 1].findIndex(
+    p => p.userid === e.userid
+  );
+  const victim = playerRoundRecords[e.round - 1][victimIdx];
+  const attackerIdx = playerRoundRecords[e.round - 1].findIndex(
+    p => p.userid === e.attacker
+  );
+  const attacker = playerRoundRecords[e.round - 1][attackerIdx];
+  const health = victim ? victim.health : 0;
+  let dmg_dealt = e.dmg_health;
+  let new_health = health - e.dmg_health;
+
+  if (new_health < 0) {
+    new_health = 0;
+    dmg_dealt = health;
+  }
+  if (victim) {
+    victim.health = new_health;
+    playerRoundRecords[e.round - 1][victimIdx] = victim;
+  }
+  if (attacker) {
+    attacker.total_damage_dealt += parseInt(dmg_dealt);
+    playerRoundRecords[e.round - 1][attackerIdx] = attacker;
+  }
+
+  return playerRoundRecords;
+};
+
 export const killStats = (kills, playersById, playerRoundRecords) => {
   kills.forEach(kill => {
     const attacker = playersById[kill.attacker_userid];
