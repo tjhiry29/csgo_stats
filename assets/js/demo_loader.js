@@ -46,12 +46,16 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     grenadeDetonations = [],
     playerDamaged = [],
     roundWins = [],
-    playerInfo = [];
+    playerInfo = [],
+    lastTime = 0;
 
   const updateGrenadeThrowInformation = (idx, e) => {
     if (idx != -1) {
       let grenadeThrow = grenadeThrows[idx];
       grenadeThrow = setGrenadeDetonationInfo(grenadeThrow, e);
+      if (e.dmg_dealt) {
+        grenadeThrow.total_damage_dealt += e.dmg_dealt;
+      }
       grenadeThrows[idx] = grenadeThrow;
     }
   };
@@ -66,6 +70,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     if (e.table.name === "userinfo" && e.userData != null) {
       console.log("\nPlayer info updated:");
       console.log(e.entryIndex, e.userData);
+      e.userData.xuid = e.userData.xuid.toString();
       playerInfo.push(e.userData);
     }
   });
@@ -73,20 +78,25 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   demoFile.gameEvents.on("round_announce_match_start", () => {
     roundNum++;
     let players = demoFile.entities.players;
-    players = players.map(player => {
-      return {
-        round: roundNum,
-        name: player.name,
-        userid: player.userId,
-        health: 100,
-        dead: false,
-        traded: false,
-        total_damage_dealt: 0.0,
-        teamnum: player.teamNumber,
-        kills: 0,
-        assists: 0
-      };
-    });
+    players = players
+      .filter(
+        player =>
+          !player.userInfo.guid.includes("BOT") && !player.name.includes("Obs")
+      )
+      .map(player => {
+        return {
+          round: roundNum,
+          name: player.name,
+          userid: player.userId,
+          health: 100,
+          dead: false,
+          traded: false,
+          total_damage_dealt: 0.0,
+          teamnum: player.teamNumber,
+          kills: 0,
+          assists: 0
+        };
+      });
     playerRoundRecords.push(players);
   });
 
@@ -95,6 +105,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("round_start", e => {
+    lastTime = demoFile.currentTime;
     let players = demoFile.entities.players;
     players = players.map(player => {
       return {
@@ -131,14 +142,14 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   demoFile.gameEvents.on("weapon_fire", e => {
     if (GRENADE_WEAPONS.includes(e.weapon) && roundNum != 0) {
       const user = demoFile.entities.getByUserId(e.userid);
-      e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+      e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
       e = setGrenadeThrowInfo(e, user);
       grenadeThrows.push(e);
     }
   });
 
   demoFile.gameEvents.on("player_hurt", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     if (e.weapon === "hegrenade") {
       let idx = grenadeThrows.findIndex(
         gt =>
@@ -166,7 +177,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("flashbang_detonate", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -178,7 +189,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("smokegrenade_detonate", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -190,7 +201,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("inferno_startburn", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -202,7 +213,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("inferno_expire", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -217,7 +228,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("hegrenade_detonate", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     grenadeDetonations.push(e);
     let idx = grenadeThrows.findIndex(
       gt =>
@@ -243,7 +254,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   });
 
   demoFile.gameEvents.on("player_death", e => {
-    e = setBasicEventInfo(e, demoFile, mapName, roundNum);
+    e = setBasicEventInfo(e, demoFile, mapName, roundNum, lastTime);
     e = setKillInfo(e, demoFile);
     const playerRecordIdx = playerRoundRecords[roundNum - 1].findIndex(
       p => p.userid === e.userid
@@ -292,7 +303,7 @@ const outputDemoInfo = (buffer, onEnd, file) => {
       player_round_records: playerRoundRecords,
       kills,
       grenade_throws: grenadeThrows,
-      round_wins: roundWins,
+      // round_wins: roundWins,
       player_info: playerInfo,
       teams,
       demo_name: file.name,

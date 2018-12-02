@@ -1,5 +1,5 @@
 defmodule CsgoStats.Stats.TeamGameRecord do
-  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord}
+  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord, PlayerRoundRecord}
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -11,8 +11,10 @@ defmodule CsgoStats.Stats.TeamGameRecord do
     field(:rounds_lost, :integer)
     field(:rounds_won, :integer)
     field(:teamnum, :integer)
+    field(:team_name, :string)
     belongs_to(:game, Game)
     has_many(:player_game_records, PlayerGameRecord)
+    has_many(:player_round_records, PlayerRoundRecord)
 
     timestamps()
   end

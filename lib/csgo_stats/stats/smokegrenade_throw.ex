@@ -48,8 +48,7 @@ defmodule CsgoStats.Stats.SmokegrenadeThrow do
       :tick,
       :round,
       :origin,
-      :time_elapsed,
-      :time_left_in_round
+      :time_elapsed
     ])
   end
 end

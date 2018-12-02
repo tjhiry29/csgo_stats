@@ -28,6 +28,7 @@ defmodule CsgoStats.Stats.Player do
 
         player
         |> Map.put(:xuid, Map.get(info.fields, "xuid") |> String.to_integer())
+        |> Map.put(:guid, Map.get(info.fields, "guid"))
         |> Map.put(:fakeplayer, Map.get(info.fields, "fakeplayer"))
         |> Map.put(:friends_id, Map.get(info.fields, "friendsID") |> String.to_integer())
         |> Map.put(
@@ -65,8 +66,7 @@ defmodule CsgoStats.Stats.Player do
     |> validate_required([
       :name,
       :xuid,
-      :guid,
-      :friends_id
+      :guid
     ])
     |> unique_constraint(:xuid)
   end

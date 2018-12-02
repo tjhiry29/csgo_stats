@@ -10,6 +10,7 @@ defmodule CsgoStats.Repo.Migrations.CreateTeams do
       add(:bomb_defusal_ids, {:array, :integer})
       add(:rounds_won, :integer)
       add(:rounds_lost, :integer)
+      add(:team_name, :string)
       add(:game_id, references(:games, on_delete: :nothing))
 
       timestamps()

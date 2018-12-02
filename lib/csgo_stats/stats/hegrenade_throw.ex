@@ -58,8 +58,6 @@ defmodule CsgoStats.Stats.HegrenadeThrow do
       :origin,
       :facing,
       :time_elapsed,
-      :time_left_in_round,
-      :player_damage_dealt,
       :total_damage_dealt
     ])
   end

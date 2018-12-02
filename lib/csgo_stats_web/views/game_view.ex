@@ -18,7 +18,7 @@ defmodule CsgoStatsWeb.GameView do
 
   def format_kill(kill = %CsgoStats.Stats.Kill{}) do
     "#{kill.attacker_name} [#{kill.weapon}#{headshot_string(kill)}] #{kill.victim_name} @ #{
-      Float.round(kill.time_elapsed, 1)
+      Float.round(kill.time_elapsed || 0.0, 1)
     }s into the round"
   end
 

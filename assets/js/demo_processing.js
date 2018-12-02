@@ -1,10 +1,16 @@
 import { groupBy, convertToArray } from "./util";
 
-export const setBasicEventInfo = (event, demoFile, mapName, roundNum) => {
+export const setBasicEventInfo = (
+  event,
+  demoFile,
+  mapName,
+  roundNum,
+  lastTime
+) => {
   return Object.assign({}, event, {
     map_name: mapName,
     tick: demoFile.currentTick,
-    time_elapsed: demoFile.current_time,
+    time_elapsed: demoFile.currentTime - lastTime,
     round: roundNum
   });
 };
@@ -19,11 +25,13 @@ export const setGrenadeDetonationInfo = (grenadeThrow, e) => {
 export const setGrenadeThrowInfo = (grenadeThrow, user) => {
   return Object.assign({}, grenadeThrow, {
     origin: convertToArray(user.position),
-    facing: convertToArray(user.eyeAngles),
-    damage_dealt: 0,
+    facing: convertToArray(user.eyeAngles).join(","),
+    total_damage_dealt: 0,
     total_blind_duration: 0,
     detonated: false,
-    expired: false
+    expired: false,
+    player_userid: user.userId,
+    player_name: user.name
   });
 };
 
@@ -96,35 +104,41 @@ export const createMatchStats = players => {
 };
 
 export const createPlayers = (players, mapName, teams) => {
-  return players.map(player => {
-    return {
-      name: player.name,
-      userid: player.userId,
-      map_name: mapName,
-      kill_count: player.kills,
-      death_count: player.deaths,
-      assist_count: player.assists,
-      headshot_count: 0,
-      headshot_percentage: 0.0,
-      kill_death_ratio: player.kills / player.deaths,
-      adr: 0.0,
-      trade_kills: 0,
-      deaths_traded: 0,
-      first_deaths: 0,
-      first_kills: 0,
-      kast: 0,
-      rounds_played: teams[2].score + teams[3].score,
-      won:
-        teams[player.teamNumber].score >
-        teams[player.teamNumber == 2 ? 3 : 2].score,
-      tie: teams[2].score == teams[3].score,
-      teamnum: player.teamNumber,
-      xuid: player.userInfo.xuid.toString(),
-      guid: player.userInfo.guid,
-      fakeplayer: player.userInfo.fakePlayer,
-      friends_id: player.userInfo.friendsId
-    };
-  });
+  return players
+    .map(player => {
+      return {
+        name: player.name,
+        userid: player.userId,
+        map_name: mapName,
+        kill_count: player.kills,
+        death_count: player.deaths,
+        assist_count: player.assists,
+        headshot_count: 0,
+        headshot_percentage: 0.0,
+        kill_death_ratio: player.kills / player.deaths,
+        adr: 0.0,
+        trade_kills: 0,
+        deaths_traded: 0,
+        first_deaths: 0,
+        first_kills: 0,
+        kast: 0,
+        rounds_played: teams[2].score + teams[3].score,
+        rounds_won: teams[player.teamNumber].score,
+        rounds_lost: teams[player.teamNumber == 2 ? 3 : 2].score,
+        won:
+          teams[player.teamNumber].score >
+          teams[player.teamNumber == 2 ? 3 : 2].score,
+        tie: teams[2].score == teams[3].score,
+        teamnum: player.teamNumber,
+        xuid: player.userInfo.xuid.toString(),
+        guid: player.userInfo.guid,
+        fakeplayer: player.userInfo.fakePlayer,
+        friends_id: player.userInfo.friendsId
+      };
+    })
+    .filter(
+      player => !player.name.includes("Obs") && !player.guid.includes("BOT")
+    );
 };
 
 export const findTradeKills = (kills, kill, tickRate) => {

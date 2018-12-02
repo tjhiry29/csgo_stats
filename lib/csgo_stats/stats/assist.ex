@@ -5,7 +5,7 @@ defmodule CsgoStats.Stats.Assist do
 
   schema "assists" do
     field(:assister_name, :string)
-    field(:assister_userid, :string)
+    field(:assister_userid, :integer)
     field(:round, :integer)
     field(:tick, :integer)
     field(:time_elapsed, :float)
@@ -34,12 +34,29 @@ defmodule CsgoStats.Stats.Assist do
     |> put_assoc(:assister, assister)
   end
 
+  def put_game(changeset, game) do
+    changeset
+    |> put_assoc(:game, game)
+  end
+
+  def put_victim(changeset, victim) do
+    changeset
+    |> put_assoc(:victim, victim)
+  end
+
+  def put_assister(changeset, assister) do
+    changeset
+    |> put_assoc(:assister, assister)
+  end
+
   @doc false
   def changeset(assist, attrs) do
     assist
     |> cast(attrs, [
       :victim_name,
       :assister_name,
+      :victim_userid,
+      :assister_userid,
       :round,
       :tick,
       :time_left_in_round,
@@ -49,9 +66,7 @@ defmodule CsgoStats.Stats.Assist do
       :victim_name,
       :assister_name,
       :round,
-      :tick,
-      :time_left_in_round,
-      :time_elapsed
+      :tick
     ])
   end
 end

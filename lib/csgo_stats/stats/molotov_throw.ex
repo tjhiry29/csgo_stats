@@ -47,7 +47,6 @@ defmodule CsgoStats.Stats.MolotovThrow do
       :location,
       :time_elapsed,
       :time_left_in_round,
-      :player_damage_dealt,
       :total_damage_dealt
     ])
     |> validate_required([
@@ -58,8 +57,6 @@ defmodule CsgoStats.Stats.MolotovThrow do
       :origin,
       :facing,
       :time_elapsed,
-      :time_left_in_round,
-      :player_damage_dealt,
       :total_damage_dealt
     ])
   end

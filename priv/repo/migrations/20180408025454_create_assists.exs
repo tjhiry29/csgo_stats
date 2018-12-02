@@ -6,7 +6,7 @@ defmodule CsgoStats.Repo.Migrations.CreateAssists do
       add(:victim_name, :string)
       add(:victim_userid, :integer)
       add(:assister_name, :string)
-      add(:assister_userid, :string)
+      add(:assister_userid, :integer)
       add(:round, :integer)
       add(:tick, :integer)
       add(:time_left_in_round, :float)

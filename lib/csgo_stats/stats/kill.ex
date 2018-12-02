@@ -52,6 +52,26 @@ defmodule CsgoStats.Stats.Kill do
     |> put_assoc(:victim, victim)
   end
 
+  def put_game(changeset, game) do
+    changeset
+    |> put_assoc(:game, game)
+  end
+
+  def put_victim(changeset, victim) do
+    changeset
+    |> put_assoc(:victim, victim)
+  end
+
+  def put_attacker(changeset, attacker) do
+    changeset
+    |> put_assoc(:attacker, attacker)
+  end
+
+  def put_assist(changeset, assist) do
+    changeset
+    |> put_assoc(:assist, assist)
+  end
+
   @doc false
   def changeset(kill, attrs) do
     kill
@@ -84,8 +104,6 @@ defmodule CsgoStats.Stats.Kill do
       :victim_position,
       :attacker_position,
       :map_name,
-      :time_elapsed,
-      :time_left_in_round,
       :trade,
       :first_of_round
     ])

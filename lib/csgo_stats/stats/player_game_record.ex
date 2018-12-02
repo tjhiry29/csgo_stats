@@ -1,5 +1,5 @@
 defmodule CsgoStats.Stats.PlayerGameRecord do
-  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord, Kill, Player}
+  alias CsgoStats.Stats.{Game, TeamGameRecord, PlayerGameRecord, Kill, Player, PlayerRoundRecord}
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -31,6 +31,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     belongs_to(:game, Game)
     belongs_to(:team_game_record, TeamGameRecord)
     belongs_to(:player, Player)
+    has_many(:player_round_records, PlayerRoundRecord)
     has_many(:kills, Kill, foreign_key: :attacker_id)
     has_many(:deaths, Kill, foreign_key: :victim_id)
 
@@ -80,6 +81,21 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     |> put_assoc(:player, stats_player)
   end
 
+  def put_game(changeset, game) do
+    changeset
+    |> put_assoc(:game, game)
+  end
+
+  def put_team_game_record(changeset, team_game_record) do
+    changeset
+    |> put_assoc(:team_game_record, team_game_record)
+  end
+
+  def put_player(changeset, player) do
+    changeset
+    |> put_assoc(:player, player)
+  end
+
   @doc false
   def changeset(player_game_record, attrs) do
     player_game_record
@@ -103,6 +119,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :userid,
       :xuid,
       :guid,
+      :friends_id,
       :rounds_won,
       :rounds_lost,
       :won,
@@ -122,10 +139,6 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :kill_count,
       :map_name,
       :name,
-      :rounds_played,
-      :teamnum,
-      :trade_kills,
-      :userid,
       :xuid,
       :guid,
       :rounds_won,
@@ -133,6 +146,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
       :won,
       :tie
     ])
+    |> format_floats
   end
 
   def headshot_percentage(headshot_count, kill_count) do
@@ -141,5 +155,22 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
 
   def kill_death_ratio(kill_count, death_count) do
     Float.round(kill_count / death_count, 2)
+  end
+
+  def format_floats(changeset) do
+    case changeset do
+      %Ecto.Changeset{
+        valid?: true,
+        changes: %{kill_death_ratio: kdr, headshot_percentage: hs, adr: adr, kast: kast}
+      } ->
+        changeset
+        |> put_change(:kill_death_ratio, Float.round(kdr, 2))
+        |> put_change(:headshot_percentage, Float.round(hs, 2))
+        |> put_change(:adr, Float.round(adr, 2))
+        |> put_change(:kast, Float.round(kast, 2))
+
+      _ ->
+        changeset
+    end
   end
 end

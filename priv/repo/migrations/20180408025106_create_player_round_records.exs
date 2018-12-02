@@ -14,6 +14,8 @@ defmodule CsgoStats.Repo.Migrations.CreatePlayerRoundRecords do
       add(:traded, :boolean, default: false, null: false)
       add(:dead, :boolean, default: false, null: false)
       add(:player_id, references(:players, on_delete: :nothing))
+      add(:player_game_record_id, references(:player_game_records, on_delete: :nothing))
+      add(:team_game_record_id, references(:team_game_records, on_delete: :nothing))
       add(:game_id, references(:games, on_delete: :nothing))
 
       timestamps()
