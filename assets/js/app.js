@@ -32,10 +32,6 @@ channel
     console.log("Unable to join", resp);
   });
 
-channel.on("test:stuff", msg => {
-  console.log(msg);
-});
-
 $(function() {
   $('[data-toggle="tooltip"]').tooltip();
 });

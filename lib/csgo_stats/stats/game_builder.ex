@@ -1,4 +1,6 @@
 defmodule CsgoStats.Stats.GameBuilder do
+  @doc "This module converts the data provided by the JS demofile module into data for the Database."
+
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query, warn: false
@@ -15,10 +17,17 @@ defmodule CsgoStats.Stats.GameBuilder do
     player_round_records_info = info |> Map.get("player_round_records")
     demo_name = info |> Map.get("demo_name")
     player_game_record_info = info |> Map.get("players")
+    js_version = info |> Map.get("version")
 
     Repo.transaction(fn ->
       {:ok, game_record} =
-        create_game(demo_name, teams, map_name, tick_rate)
+        create_game(%{
+          demo_name: demo_name,
+          teams: teams,
+          map_name: map_name,
+          tick_rate: tick_rate,
+          version: js_version
+        })
         |> Repo.insert()
 
       player_records =
@@ -57,10 +66,17 @@ defmodule CsgoStats.Stats.GameBuilder do
     end)
   end
 
-  defp create_game(demo_name, teams, map_name, tick_rate) do
+  defp create_game(%{
+         demo_name: demo_name,
+         teams: teams,
+         map_name: map_name,
+         tick_rate: tick_rate,
+         version: version
+       }) do
     team1_score = teams |> Enum.at(2) |> Map.get("score")
     team2_score = teams |> Enum.at(3) |> Map.get("score")
     rounds_played = team1_score + team2_score
+    [major_version, minor_version, patch_version] = String.split(version, ".")
 
     Stats.Game.changeset(%Stats.Game{}, %{
       demo_name: demo_name,
@@ -68,7 +84,10 @@ defmodule CsgoStats.Stats.GameBuilder do
       tick_rate: tick_rate,
       team1_score: team1_score,
       team2_score: team2_score,
-      rounds_played: rounds_played
+      rounds_played: rounds_played,
+      major_version: String.to_integer(major_version),
+      minor_version: String.to_integer(minor_version),
+      patch_version: String.to_integer(patch_version)
     })
   end
 
@@ -121,9 +140,9 @@ defmodule CsgoStats.Stats.GameBuilder do
          team_game_records,
          game_record,
          player_records,
-         player_infos
+         player_game_record_info
        ) do
-    Enum.map(player_infos, fn p ->
+    Enum.map(player_game_record_info, fn p ->
       {_, info} = p
 
       {:ok, record} =

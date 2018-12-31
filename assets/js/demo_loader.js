@@ -21,6 +21,13 @@ const GRENADE_WEAPONS = [
   "weapon_smokegrenade"
 ];
 
+// This Version number should be changed for updates to the demo loader.
+// For extremely breaking changes which completely changes data formats or data results,
+// such that mixing data between versions doesn't make sense, bump major version.
+// For small fixes, bump the patch version number.
+
+const VERSION = "0.1.0";
+
 const onFileUploaded = (file, onEnd) => {
   let reader = new FileReader();
 
@@ -307,7 +314,8 @@ const outputDemoInfo = (buffer, onEnd, file) => {
       player_info: playerInfo,
       teams,
       demo_name: file.name,
-      players: playersById
+      players: playersById,
+      version: VERSION
     });
   });
 

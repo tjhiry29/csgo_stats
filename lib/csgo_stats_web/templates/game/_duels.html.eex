@@ -1,0 +1,30 @@
+<% kills_by_player = get_kills_by_player(@kills) %>
+<h2>Duels</h2>
+<div class="table-responsive">
+  <table class="table table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th></th>
+        <%= for {teamnum, players} <- @players_by_team do %>
+          <%= for player <- players do %>
+            <th><%= short_player_name(player.name) %></th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for {teamnum, players} <- @players_by_team do %>
+        <%= for player <- players do %>
+          <tr>
+            <td><%= short_player_name(player.name) %></td>
+            <%= for {kills, deaths, victim_name} <- duel_record(player, kills_by_player, @all_players) do %>
+              <td class="duel-record" data-toggle="tooltip" data-placement="top" title="<%= short_duel_record(kills, deaths, player.name, victim_name) %>">
+                <%= print_duel_record(kills, deaths) %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

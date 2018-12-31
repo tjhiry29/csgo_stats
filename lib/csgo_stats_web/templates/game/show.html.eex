@@ -1,4 +1,3 @@
-<% kills_by_player = get_kills_by_player(@kills) %>
 <div class="game-show">
   <h2>Game</h2>
 
@@ -48,59 +47,8 @@
     </table>
   </div>
 
-  <h2>Duels</h2>
-  <div class="table-responsive">
-    <table class="table table-sm">
-      <thead class="thead-light">
-        <tr>
-          <th></th>
-          <%= for {teamnum, players} <- @players_by_team do %>
-            <%= for player <- players do %>
-              <th><%= short_player_name(player.name) %></th>
-            <% end %>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for {teamnum, players} <- @players_by_team do %>
-          <%= for player <- players do %>
-            <tr>
-              <td><%= short_player_name(player.name) %></td>
-              <%= for {kills, deaths, victim_name} <- duel_record(player, kills_by_player, @all_players) do %>
-                <td class="duel-record" data-toggle="tooltip" data-placement="top" title="<%= short_duel_record(kills, deaths, player.name, victim_name) %>">
-                  <%= print_duel_record(kills, deaths) %>
-                </td>
-              <% end %>
-            </tr>
-          <% end %>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-  <h2>Round Breakdown</h2>
-  <div class="table-responsive">
-    <table class="table table-sm">
-      <thead class="thead-light">
-        <tr>
-          <th>Round</th>
-          <th>Kills</th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for {round_num, kills} <- get_round_breakdown(@kills) do %>
-          <tr>
-            <td><%= round_num %></td>
-            <td>
-              <%= for kill <- kills do %>
-                <div><%= format_kill(kill) %></div>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+  <%= render CsgoStatsWeb.GameView, "_duels.html", players_by_team: @players_by_team, all_players: @all_players, kills: @kills %>
+  <%= render CsgoStatsWeb.GameView, "_round_breakdown.html", kills: @kills %>
 
   <%= link "Back", to: game_path(@conn, :index), class: "btn btn-primary btn-xs" %>
 </div>

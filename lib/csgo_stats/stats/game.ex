@@ -10,6 +10,9 @@ defmodule CsgoStats.Stats.Game do
     field(:team1_score, :integer)
     field(:team2_score, :integer)
     field(:tick_rate, :integer)
+    field(:major_version, :integer)
+    field(:minor_version, :integer)
+    field(:patch_version, :integer)
     has_many(:assists, Assist)
     has_many(:game_events, GameEvent)
     has_many(:kills, Kill)
@@ -55,14 +58,27 @@ defmodule CsgoStats.Stats.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:map_name, :tick_rate, :team1_score, :team2_score, :rounds_played, :demo_name])
+    |> cast(attrs, [
+      :map_name,
+      :tick_rate,
+      :team1_score,
+      :team2_score,
+      :rounds_played,
+      :demo_name,
+      :major_version,
+      :minor_version,
+      :patch_version
+    ])
     |> validate_required([
       :map_name,
       :tick_rate,
       :team1_score,
       :team2_score,
       :rounds_played,
-      :demo_name
+      :demo_name,
+      :major_version,
+      :minor_version,
+      :patch_version
     ])
   end
 end

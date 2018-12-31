@@ -1,0 +1,23 @@
+<h2>Round Breakdown</h2>
+<div class="table-responsive">
+  <table class="table table-sm">
+    <thead class="thead-light">
+      <tr>
+        <th>Round</th>
+        <th>Kills</th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for {round_num, kills} <- get_round_breakdown(@kills) do %>
+        <tr>
+          <td><%= round_num %></td>
+          <td>
+            <%= for kill <- kills do %>
+              <div><%= format_kill(kill) %></div>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
