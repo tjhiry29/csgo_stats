@@ -40,8 +40,8 @@ defmodule CsgoStats.Mixfile do
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
-      {:demo_info_go, git: "git@github.com:tjhiry29/csgo_demo_info.git"}
+      {:cowboy, "~> 1.0"}
+      # {:demo_info_go, git: "git@github.com:tjhiry29/csgo_demo_info.git"}
       # {:exq, "~> 0.10"},
       # {:exq_ui, "~> 0.9.0"}
     ]

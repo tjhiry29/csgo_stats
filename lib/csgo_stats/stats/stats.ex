@@ -5,7 +5,6 @@ defmodule CsgoStats.Stats do
 
   import Ecto.Query, warn: false
   alias CsgoStats.Repo
-  require DemoInfoGo
 
   def batch_insert(changesets) do
     result =
@@ -194,7 +193,7 @@ defmodule CsgoStats.Stats do
     |> Repo.insert()
   end
 
-  def create_team_game_record(game = %Game{}, team = %DemoInfoGo.Team{}) do
+  def create_team_game_record(game = %Game{}, team) do
     %TeamGameRecord{}
     |> TeamGameRecord.create_team_game_record(game, team)
     |> Repo.insert()
@@ -305,7 +304,7 @@ defmodule CsgoStats.Stats do
     |> Repo.insert()
   end
 
-  def create_or_get_player(%DemoInfoGo.Player{} = player) do
+  def create_or_get_player(player) do
     changeset = Player.create_player(player)
 
     case Repo.get_by(Player, xuid: Map.get(player, :xuid)) do
@@ -502,24 +501,24 @@ defmodule CsgoStats.Stats do
         end)
       end
 
-      smokegrenade_throws =
-        get_grenade_throws.(players, &DemoInfoGo.SmokegrenadeThrow.is_smokegrenade_throw(&1))
+      # smokegrenade_throws =
+      #   get_grenade_throws.(players, &DemoInfoGo.SmokegrenadeThrow.is_smokegrenade_throw(&1))
 
-      hegrenade_throws =
-        get_grenade_throws.(players, &DemoInfoGo.HegrenadeThrow.is_hegrenade_throw(&1))
+      # hegrenade_throws =
+      #   get_grenade_throws.(players, &DemoInfoGo.HegrenadeThrow.is_hegrenade_throw(&1))
 
-      flashbang_throws =
-        get_grenade_throws.(players, &DemoInfoGo.FlashbangThrow.is_flashbang_throw(&1))
+      # flashbang_throws =
+      #   get_grenade_throws.(players, &DemoInfoGo.FlashbangThrow.is_flashbang_throw(&1))
 
-      molotov_throws = get_grenade_throws.(players, &DemoInfoGo.MolotovThrow.is_molotov_throw(&1))
+      # molotov_throws = get_grenade_throws.(players, &DemoInfoGo.MolotovThrow.is_molotov_throw(&1))
 
-      game_players = first_players ++ second_players
+      # game_players = first_players ++ second_players
 
-      {:ok, _} = create_kills_and_assists(kills, game_players, game)
-      {:ok, _} = create_smokegrenade_throws(smokegrenade_throws, game_players, game)
-      {:ok, _} = create_hegrenade_throws(hegrenade_throws, game_players, game)
-      {:ok, _} = create_molotov_throws(molotov_throws, game_players, game)
-      {:ok, _} = create_flashbang_throws(flashbang_throws, game_players, game)
+      # {:ok, _} = create_kills_and_assists(kills, game_players, game)
+      # {:ok, _} = create_smokegrenade_throws(smokegrenade_throws, game_players, game)
+      # {:ok, _} = create_hegrenade_throws(hegrenade_throws, game_players, game)
+      # {:ok, _} = create_molotov_throws(molotov_throws, game_players, game)
+      # {:ok, _} = create_flashbang_throws(flashbang_throws, game_players, game)
     end)
   end
 end

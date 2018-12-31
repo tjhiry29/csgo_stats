@@ -38,7 +38,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
     timestamps()
   end
 
-  def normalize_player(player = %DemoInfoGo.Player{}, player_infos) do
+  def normalize_player(player, player_infos) do
     infos =
       Enum.filter(player_infos, fn info ->
         info.fields |> Map.get("userID") |> String.to_integer() == player.id
@@ -64,7 +64,7 @@ defmodule CsgoStats.Stats.PlayerGameRecord do
   end
 
   def create_player_from_stats(
-        player = %DemoInfoGo.Player{},
+        player,
         game = %Game{},
         team = %TeamGameRecord{},
         stats_player = %Player{}

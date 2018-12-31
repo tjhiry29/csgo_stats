@@ -13,7 +13,7 @@ defmodule CsgoStats.Stats.Player do
     timestamps()
   end
 
-  def normalize_player(player = %DemoInfoGo.Player{}, player_infos) do
+  def normalize_player(player, player_infos) do
     infos =
       Enum.filter(player_infos, fn info ->
         info.fields |> Map.get("userID") |> String.to_integer() == player.id
@@ -46,7 +46,7 @@ defmodule CsgoStats.Stats.Player do
     Enum.filter(players, fn player -> player.fakeplayer == "0" end)
   end
 
-  def create_player(player = %DemoInfoGo.Player{}) do
+  def create_player(player) do
     attrs =
       player
       |> Map.from_struct()

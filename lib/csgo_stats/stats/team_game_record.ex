@@ -22,7 +22,7 @@ defmodule CsgoStats.Stats.TeamGameRecord do
   def create_team_game_record(
         struct = %TeamGameRecord{},
         game = %Game{},
-        team = %DemoInfoGo.Team{}
+        team
       ) do
     attrs =
       team
