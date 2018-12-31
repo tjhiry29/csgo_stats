@@ -1,10 +1,7 @@
 defmodule CsgoStatsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :csgo_stats
 
-  socket("/socket", CsgoStatsWeb.UserSocket,
-    websocket: [timeout: 45_000],
-    longpoll: false
-  )
+  socket("/socket", CsgoStatsWeb.UserSocket)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
