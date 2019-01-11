@@ -68,6 +68,8 @@ const outputDemoInfo = (buffer, onEnd, file) => {
   };
 
   demoFile.on("start", () => {
+    console.log("Demo header:", demoFile.header);
+    console.log("Tick rate:", demoFile.tickRate);
     tickRate = demoFile.tickRate;
     mapName = demoFile.header.mapName;
     playbackTicks = demoFile.playbackTicks;
@@ -293,17 +295,17 @@ const outputDemoInfo = (buffer, onEnd, file) => {
     playersById = results[0];
     playerRoundRecords = results[1];
     playersById = aggreggateStats(playersById, playerRoundRecords);
-    console.log(teams);
-    console.log(tickRate);
-    console.log(mapName);
-    console.log(playerRoundRecords);
-    console.log(kills);
-    console.log(grenadeThrows);
-    console.log(grenadeDetonations);
-    console.log(playerDamaged);
-    console.log(roundWins);
-    console.log(matchStats);
-    console.log(playersById);
+    // console.log(teams);
+    // console.log(tickRate);
+    // console.log(mapName);
+    // console.log(playerRoundRecords);
+    // console.log(kills);
+    // console.log(grenadeThrows);
+    // console.log(grenadeDetonations);
+    // console.log(playerDamaged);
+    // console.log(roundWins);
+    // console.log(matchStats);
+    // console.log(playersById);
     onEnd({
       tick_rate: tickRate,
       map_name: mapName,

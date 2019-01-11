@@ -9,4 +9,4 @@ To start your Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-For now, only seeded data is available.
+Deployed to [heroku](https://gentle-river-53539.herokuapp.com/)

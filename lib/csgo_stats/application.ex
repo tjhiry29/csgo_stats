@@ -11,7 +11,7 @@ defmodule CsgoStats.Application do
       # Start the Ecto repository
       supervisor(CsgoStats.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(CsgoStatsWeb.Endpoint, []),
+      supervisor(CsgoStatsWeb.Endpoint, [])
       # Start your own worker by calling: CsgoStats.Worker.start_link(arg1, arg2, arg3)
       # worker(CsgoStats.Worker, [arg1, arg2, arg3]),
     ]
