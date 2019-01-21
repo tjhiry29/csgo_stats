@@ -11,7 +11,6 @@ config :logger, level: :warn
 
 # Configure your database
 config :csgo_stats, CsgoStats.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
   database: "csgo_stats_test",

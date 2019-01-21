@@ -1,5 +1,5 @@
 defmodule CsgoStats.Repo do
-  use Ecto.Repo, otp_app: :csgo_stats
+  use Ecto.Repo, otp_app: :csgo_stats, adapter: Ecto.Adapters.Postgres
 
   @doc """
   Dynamically loads the repository url from the
