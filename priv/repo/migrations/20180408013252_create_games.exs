@@ -20,6 +20,6 @@ defmodule CsgoStats.Repo.Migrations.CreateGames do
     create(index(:games, [:major_version]))
     create(index(:games, [:major_version, :minor_version, :patch_version]))
     create(index(:games, [:map_name]))
-    create(index(:games, [:demo_name]))
+    create(index(:games, [:demo_name], unique: true))
   end
 end

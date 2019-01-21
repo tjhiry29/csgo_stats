@@ -53,6 +53,7 @@ defmodule CsgoStats.Stats.Game do
       :demo_name
     ])
     |> validate_required([:map_name, :team1_score, :team2_score, :rounds_played, :demo_name])
+    |> unique_constraint([:demo_name])
   end
 
   @doc false
