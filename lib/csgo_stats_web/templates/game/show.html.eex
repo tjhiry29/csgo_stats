@@ -28,7 +28,7 @@
         <tbody>
           <%= for player <- players do %>
             <tr>
-              <td class="clickable"><a href="<%= player_path(@conn, :show, player.player_id) %>"><%= player.name %></a></td>
+              <td class="clickable"><a href="<%= Routes.player_path(@conn, :show, player.player_id) %>"><%= player.name %></a></td>
               <td><%= player.kill_count %></td>
               <td><%= player.assist_count %></td>
               <td><%= player.death_count %></td>
@@ -50,5 +50,5 @@
   <%= render CsgoStatsWeb.GameView, "_duels.html", players_by_team: @players_by_team, all_players: @all_players, kills: @kills %>
   <%= render CsgoStatsWeb.GameView, "_round_breakdown.html", kills: @kills %>
 
-  <%= link "Back", to: game_path(@conn, :index), class: "btn btn-primary btn-xs" %>
+  <%= link "Back", to: Routes.game_path(@conn, :index), class: "btn btn-primary btn-xs" %>
 </div>

@@ -28,7 +28,7 @@
     <tr>
       <td><%= player.name %>
       <td class="clickable">
-        <a href="<%= game_path(@conn, :show, player.game_id) %>">
+        <a href="<%= Routes.game_path(@conn, :show, player.game_id) %>">
           <%= player.map_name %>
         </a>
       </td>
@@ -49,4 +49,4 @@
   </tbody>
 </table>
 
-<span><%= link "Back", to: player_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>

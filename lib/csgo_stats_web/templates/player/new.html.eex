@@ -1,5 +1,5 @@
 <h2>New Player</h2>
 
-<%= render "form.html", Map.put(assigns, :action, player_path(@conn, :create)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.player_path(@conn, :create)) %>
 
-<span><%= link "Back", to: player_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.player_path(@conn, :index) %></span>

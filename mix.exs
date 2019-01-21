@@ -33,14 +33,17 @@ defmodule CsgoStats.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.0"},
+      {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:ecto_sql, "~> 3.0"},
+      {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:cowboy, "~> 2.5"},
+      {:jason, "~> 1.1"}
       # {:demo_info_go, git: "git@github.com:tjhiry29/csgo_demo_info.git"}
       # {:exq, "~> 0.10"},
       # {:exq_ui, "~> 0.9.0"}

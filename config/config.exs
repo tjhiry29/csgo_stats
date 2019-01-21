@@ -8,6 +8,8 @@ use Mix.Config
 # General application configuration
 config :csgo_stats, ecto_repos: [CsgoStats.Repo]
 
+config :phoenix, :json_library, Jason
+
 # Configures the endpoint
 config :csgo_stats, CsgoStatsWeb.Endpoint,
   url: [host: "localhost"],

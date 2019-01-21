@@ -21,15 +21,16 @@ defmodule CsgoStatsWeb do
     quote do
       use Phoenix.Controller, namespace: CsgoStatsWeb
       import Plug.Conn
-      import CsgoStatsWeb.Router.Helpers
+      alias CsgoStatsWeb.Router.Helpers, as: Routes
       import CsgoStatsWeb.Gettext
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/csgo_stats_web/templates",
-                        namespace: CsgoStatsWeb
+      use Phoenix.View,
+        root: "lib/csgo_stats_web/templates",
+        namespace: CsgoStatsWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
@@ -37,7 +38,7 @@ defmodule CsgoStatsWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import CsgoStatsWeb.Router.Helpers
+      alias CsgoStatsWeb.Router.Helpers, as: Routes
       import CsgoStatsWeb.ErrorHelpers
       import CsgoStatsWeb.Gettext
     end

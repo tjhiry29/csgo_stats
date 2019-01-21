@@ -19,7 +19,7 @@
       <td><%= player.friends_id %></td>
 
       <td class="text-right">
-        <%= link "Show", to: player_path(@conn, :show, player), class: "btn btn-primary btn-xs" %>
+        <%= link "Show", to: Routes.player_path(@conn, :show, player), class: "btn btn-primary btn-xs" %>
       </td>
     </tr>
 <% end %>

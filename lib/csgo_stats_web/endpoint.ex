@@ -1,7 +1,7 @@
 defmodule CsgoStatsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :csgo_stats
 
-  socket("/socket", CsgoStatsWeb.UserSocket)
+  socket("/socket", CsgoStatsWeb.UserSocket, websocket: true)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -28,7 +28,7 @@ defmodule CsgoStatsWeb.Endpoint do
   plug(Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(Plug.MethodOverride)
