@@ -1,3 +1,56 @@
 /* This file is for your main application css. */
 
 @import "./phoenix.css";
+
+body {
+  background-color: #f9f9f9;
+}
+
+.main {
+  padding-top: 10px;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.header {
+  padding: 10px;
+  background-color: #214c7a;
+}
+
+.csgo-stats-logo {
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.csgo-stats-logo a {
+  color: #f9f9f9;
+}
+
+.nav {
+  justify-content: left;
+}
+
+.nav-item {
+  margin: auto 15px auto 0;
+}
+
+.game-info {
+  padding: 10px 0;
+}
+
+.duel-record:hover {
+  background-color: #c7c9cc;
+}
+
+.clickable:hover {
+  background-color: #c7c9cc;
+}
+
+.clickable a {
+  display: block;
+  color: #000;
+  cursor: pointer;
+  text-decoration: none;
+}
